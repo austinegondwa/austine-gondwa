@@ -1,414 +1,2375 @@
 <!DOCTYPE html>
+
 <html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Austine's LIS Study Hub</title>
+
+<!-- SUPABASE -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#eef4ff;color:#222}
-.auth-container{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;background:linear-gradient(135deg,#061a40,#087f8c,#4caf50)}
-.auth-box{background:white;width:100%;max-width:420px;padding:35px;border-radius:20px;box-shadow:0 10px 35px rgba(0,0,0,.25);text-align:center}
-.logo{font-size:55px;margin-bottom:10px}
-.auth-box h1{color:#063970;margin-bottom:8px}
-.auth-box p{color:#666;margin-bottom:25px}
-input{width:100%;padding:14px;margin:8px 0;border:1px solid #ccc;border-radius:10px;font-size:16px}
-button{border:none;padding:13px 20px;border-radius:10px;cursor:pointer;font-size:16px;margin-top:10px}
-.login-btn{width:100%;background:#087f8c;color:white}
-.register-btn{width:100%;background:#4caf50;color:white}
-.switch{margin-top:20px;color:#087f8c;cursor:pointer;font-weight:bold}
-.message{margin-top:15px;font-weight:bold}
-#website{display:none}
-header{background:linear-gradient(135deg,#063970,#087f8c);color:white;padding:30px 20px;text-align:center}
-header h1{font-size:32px;margin-bottom:8px}
-nav{background:#041f3d;padding:12px;text-align:center;position:sticky;top:0;z-index:10}
-nav button{background:transparent;color:white;margin:3px;padding:10px 15px}
-nav button:hover{background:#087f8c}
-.logout{background:#d32f2f!important}
-.container{max-width:1100px;margin:auto;padding:25px}
-.welcome{background:white;padding:25px;border-radius:15px;margin-bottom:25px;box-shadow:0 4px 15px rgba(0,0,0,.08)}
-.year-title{margin:25px 0 15px;color:#063970}
-.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
-.course{background:white;padding:22px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,.1);transition:.3s}
-.course:hover{transform:translateY(-5px)}
-.course h3{color:#063970;margin-bottom:10px}
-.course button{background:#087f8c;color:white;width:100%}
-.content-box{background:white;padding:25px;margin-top:25px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,.08)}
-.content-box h2{color:#063970;margin-bottom:15px}
-.content-box h3{color:#087f8c;margin-top:20px;margin-bottom:8px}
-.content-box p{line-height:1.7;margin-bottom:12px}
-.question{background:#f2f7ff;padding:18px;border-radius:12px;margin:15px 0}
-.question label{display:block;margin:8px 0}
-.question input{width:auto;margin-right:8px}
-.submit-quiz{background:#4caf50;color:white}
-.result{margin-top:15px;font-size:20px;font-weight:bold}
-footer{background:#041f3d;color:white;text-align:center;padding:25px;margin-top:40px}
-@media(max-width:600px){header h1{font-size:25px}.auth-box{padding:25px}.container{padding:15px}}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #eef4ff;
+    color: #222;
+}
+
+/* ================= LOGIN / REGISTER ================= */
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #061a40, #087f8c, #4caf50);
+}
+
+.auth-box {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+    text-align: center;
+}
+
+.logo {
+    font-size: 55px;
+    margin-bottom: 10px;
+}
+
+.auth-box h1 {
+    color: #063970;
+    margin-bottom: 8px;
+}
+
+.auth-box p {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+button {
+    border: none;
+    padding: 13px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.login-btn {
+    width: 100%;
+    background: #087f8c;
+    color: white;
+}
+
+.register-btn {
+    width: 100%;
+    background: #4caf50;
+    color: white;
+}
+
+.switch {
+    margin-top: 20px;
+    color: #087f8c;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.message {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* ================= WEBSITE ================= */
+
+#website {
+    display: none;
+}
+
+header {
+    background: linear-gradient(135deg, #063970, #087f8c);
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+nav {
+    background: #041f3d;
+    padding: 12px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+nav button {
+    background: transparent;
+    color: white;
+    margin: 3px;
+    padding: 10px 15px;
+}
+
+nav button:hover {
+    background: #087f8c;
+}
+
+.logout {
+    background: #d32f2f !important;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 25px;
+}
+
+.welcome {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.year-title {
+    margin: 25px 0 15px;
+    color: #063970;
+}
+
+.courses {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+}
+
+.course {
+    background: white;
+    padding: 22px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.course:hover {
+    transform: translateY(-5px);
+}
+
+.course h3 {
+    color: #063970;
+    margin-bottom: 10px;
+}
+
+.course button {
+    background: #087f8c;
+    color: white;
+    width: 100%;
+}
+
+.content-box {
+    background: white;
+    padding: 25px;
+    margin-top: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.content-box h2 {
+    color: #063970;
+    margin-bottom: 15px;
+}
+
+.content-box h3 {
+    color: #087f8c;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.content-box p {
+    line-height: 1.7;
+    margin-bottom: 12px;
+}
+
+.question {
+    background: #f2f7ff;
+    padding: 18px;
+    border-radius: 12px;
+    margin: 15px 0;
+}
+
+.question label {
+    display: block;
+    margin: 8px 0;
+}
+
+.submit-quiz {
+    background: #4caf50;
+    color: white;
+}
+
+.result {
+    margin-top: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+footer {
+    background: #041f3d;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    margin-top: 40px;
+}
+
+@media(max-width:600px) {
+
+    header h1 {
+        font-size: 25px;
+    }
+
+    .auth-box {
+        padding: 25px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+}
+
 </style>
+
 </head>
 
 <body>
 
+<!-- ================= LOGIN / REGISTER ================= -->
+
 <div id="auth">
+
+```
 <div class="auth-container">
-<div class="auth-box">
-<div class="logo">📚</div>
-<h1 id="authTitle">LIS Study Hub</h1>
-<p id="authDescription">Login to access your Library and Information Science study materials.</p>
 
-<div id="loginForm">
-<input type="email" id="loginEmail" placeholder="Email address">
-<input type="password" id="loginPassword" placeholder="Password">
-<button class="login-btn" onclick="login()">🔐 Login</button>
-<div class="switch" onclick="showRegister()">Don't have an account? Create one</div>
+    <div class="auth-box">
+
+        <div class="logo">📚</div>
+
+        <h1 id="authTitle">LIS Study Hub</h1>
+
+        <p id="authDescription">
+            Login to access your Library and Information Science study materials.
+        </p>
+
+        <!-- LOGIN -->
+
+        <div id="loginForm">
+
+            <input
+                type="email"
+                id="loginEmail"
+                placeholder="Email address"
+            >
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Password"
+            >
+
+            <button class="login-btn" onclick="login()">
+                🔐 Login
+            </button>
+
+            <div class="switch" onclick="showRegister()">
+                Don't have an account? Create one
+            </div>
+
+        </div>
+
+
+        <!-- REGISTER -->
+
+        <div id="registerForm" style="display:none;">
+
+            <input
+                type="text"
+                id="registerUsername"
+                placeholder="Create username"
+            >
+
+            <input
+                type="email"
+                id="registerEmail"
+                placeholder="Email address"
+            >
+
+            <input
+                type="password"
+                id="registerPassword"
+                placeholder="Create password"
+            >
+
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm password"
+            >
+
+            <button class="register-btn" onclick="register()">
+                🆕 Create Account
+            </button>
+
+            <div class="switch" onclick="showLogin()">
+                Already have an account? Login
+            </div>
+
+        </div>
+
+        <div id="message" class="message"></div>
+
+    </div>
+
+</div>
+```
+
 </div>
 
-<div id="registerForm" style="display:none;">
-<input type="text" id="registerUsername" placeholder="Create username">
-<input type="email" id="registerEmail" placeholder="Email address">
-<input type="password" id="registerPassword" placeholder="Create password">
-<input type="password" id="confirmPassword" placeholder="Confirm password">
-<button class="register-btn" onclick="register()">🆕 Create Account</button>
-<div class="switch" onclick="showLogin()">Already have an account? Login</div>
-</div>
-
-<div id="message" class="message"></div>
-</div>
-</div>
-</div>
+<!-- ================= MAIN WEBSITE ================= -->
 
 <div id="website">
+
 <header>
+
+```
 <h1>📚 Austine's LIS Study Hub</h1>
-<p>University of Malawi — Library and Information Science</p>
+
+<p>
+    University of Malawi — Library and Information Science
+</p>
+```
+
 </header>
 
 <nav>
+
+```
 <button onclick="showHome()">🏠 Home</button>
+
 <button onclick="showYear1()">📘 Year 1</button>
+
 <button onclick="showYear2()">📗 Year 2</button>
+
 <button onclick="showLIS211()">📝 LIS211</button>
+
 <button class="logout" onclick="logout()">🚪 Logout</button>
+```
+
 </nav>
 
 <div class="container">
 
+<!-- HOME -->
+
 <div id="home">
+
+```
 <div class="welcome">
-<h2>Welcome to your Study Hub 🎓</h2><br>
-<p>This website is designed to help you study Library and Information Science courses.</p><br>
-<p>📚 Read notes<br>❓ Answer multiple-choice questions<br>✅ Check your score<br>🎯 Prepare for examinations</p>
+
+    <h2>Welcome to your Study Hub 🎓</h2>
+
+    <br>
+
+    <p>
+        This website is designed to help you study
+        Library and Information Science courses.
+    </p>
+
+    <br>
+
+    <p>
+        📚 Read notes<br>
+        ❓ Answer multiple-choice questions<br>
+        ✅ Check your score<br>
+        🎯 Prepare for examinations
+    </p>
+
 </div>
+
 
 <h2 class="year-title">📘 Year 1 Courses</h2>
+
 <div class="courses">
-<div class="course"><h3>LIS121</h3><p>Organization of Knowledge II</p><button onclick="courseMessage('LIS121')">Open Course</button></div>
-<div class="course"><h3>LIS123</h3><p>Writing and Oral Skills for Social Science</p><button onclick="courseMessage('LIS123')">Open Course</button></div>
-<div class="course"><h3>LIS124</h3><p>Marketing of Library and Information Products and Services</p><button onclick="courseMessage('LIS124')">Open Course</button></div>
-<div class="course"><h3>LIS125</h3><p>ICT II</p><button onclick="courseMessage('LIS125')">Open Course</button></div>
+
+    <div class="course">
+        <h3>LIS121</h3>
+        <p>Organization of Knowledge II</p>
+        <button onclick="courseMessage('LIS121')">
+            Open Course
+        </button>
+    </div>
+
+    <div class="course">
+        <h3>LIS123</h3>
+        <p>Writing and Oral Skills for Social Science</p>
+        <button onclick="courseMessage('LIS123')">
+            Open Course
+        </button>
+    </div>
+
+    <div class="course">
+        <h3>LIS124</h3>
+        <p>Marketing of Library and Information Products and Services</p>
+        <button onclick="courseMessage('LIS124')">
+            Open Course
+        </button>
+    </div>
+
+    <div class="course">
+        <h3>LIS125</h3>
+        <p>ICT II</p>
+        <button onclick="courseMessage('LIS125')">
+            Open Course
+        </button>
+    </div>
+
 </div>
+
 
 <h2 class="year-title">📗 Year 2 Courses</h2>
+
 <div class="courses">
-<div class="course"><h3>LIS211</h3><p>Information Literacy</p><button onclick="showLIS211()">Open Notes & Quiz</button></div>
-<div class="course"><h3>LIS212</h3><p>Records and Archives Management</p><button onclick="courseMessage('LIS212')">Open Course</button></div>
-<div class="course"><h3>LIS213</h3><p>Organization of Knowledge III</p><button onclick="courseMessage('LIS213')">Open Course</button></div>
-<div class="course"><h3>LIS214</h3><p>Digital Library Management</p><button onclick="courseMessage('LIS214')">Open Course</button></div>
-<div class="course"><h3>LIS215</h3><p>End User Computing I</p><button onclick="courseMessage('LIS215')">Open Course</button></div>
+
+    <div class="course">
+        <h3>LIS211</h3>
+        <p>Information Literacy</p>
+        <button onclick="showLIS211()">
+            Open Notes & Quiz
+        </button>
+    </div>
+
+    <div class="course">
+        <h3>LIS212</h3>
+        <p>Records and Archives Management</p>
+        <button onclick="courseMessage('LIS212')">
+            Open Course
+        </button>
+    </div>
+
+    <div class="course">
+        <h3>LIS213</h3>
+        <p>Organization of Knowledge III</p>
+        <button onclick="courseMessage('LIS213')">
+            Open Course
+        </button>
+    </div>
+
+    <div class="course">
+        <h3>LIS214</h3>
+        <p>Digital Library Management</p>
+        <button onclick="courseMessage('LIS214')">
+            Open Course
+        </button>
+    </div>
+
+    <div class="course">
+        <h3>LIS215</h3>
+        <p>End User Computing I</p>
+        <button onclick="courseMessage('LIS215')">
+            Open Course
+        </button>
+    </div>
+
 </div>
+```
+
 </div>
+
+<!-- LIS211 -->
 
 <div id="lis211" style="display:none;">
+
+
+<!-- =========================
+     LIS211 INFORMATION LITERACY
+     MASTER LECTURE NOTES
+========================= -->
+
 <div class="content-box">
-<h2>📖 LIS211 — Information Literacy</h2>
 
-<h3>1. Meaning of Information Literacy</h3>
-<p>Information literacy goes beyond simply finding information online or in books.</p>
-<p>It involves knowing when information is needed, where to find it, how to evaluate it, how to organize it, how to use it ethically and how to create new knowledge from it.</p>
+    <h2>📖 LIS211 — Information Literacy</h2>
 
-<h3>2. Components of Information Literacy</h3>
-<p>Important components include:</p>
-<p>• Identifying information needs<br>• Locating information<br>• Evaluating information<br>• Organizing information<br>• Using information ethically<br>• Creating new knowledge</p>
+    <p>
+        <strong>Master Lecture Notes</strong><br>
+        University of Malawi — Bachelor of Arts in Library and Information Science
+    </p>
 
-<h3>3. Identifying Information Needs</h3>
-<p>An information need is the gap between what a person already knows and what the person needs to know.</p>
-<p>Information may be needed to solve a problem, answer a question, make a decision or complete a task.</p>
-<p>When identifying an information need, consider the scope, key concepts, questions and the depth or type of information required.</p>
+    <!-- 1 -->
+    <h3>1. Meaning of Information Literacy</h3>
 
-<h3>4. Locating Information</h3>
-<p>A good information user should understand the strengths and limitations of different information sources.</p>
-<p>Examples of academic information databases include:</p>
-<p>Scopus<br>Web of Science<br>JSTOR<br>EBSCO</p>
+    <p>
+        Information literacy is more than simply finding information in books or on the internet.
+    </p>
 
-<h3>5. Evaluating Information</h3>
-<p>Information should be evaluated before it is used. Important considerations include:</p>
-<p>• Credibility<br>• Relevance<br>• Authority<br>• Accuracy<br>• Currency<br>• Evidence<br>• Purpose</p>
+    <p>An information-literate person is able to:</p>
 
-<h3>6. CRAAP Test</h3>
-<p>The CRAAP Test is used to evaluate information sources.</p>
-<p><strong>C</strong> — Currency<br><strong>R</strong> — Relevance<br><strong>A</strong> — Authority<br><strong>A</strong> — Accuracy<br><strong>P</strong> — Purpose</p>
+    <ul>
+        <li>Identify when information is needed</li>
+        <li>Understand what information is needed</li>
+        <li>Locate appropriate information</li>
+        <li>Search effectively</li>
+        <li>Evaluate information</li>
+        <li>Organize information</li>
+        <li>Use information ethically</li>
+        <li>Apply information to problems and situations</li>
+        <li>Create new knowledge from information</li>
+    </ul>
 
-<h3>7. Organizing Information</h3>
-<p>Organizing information refers to the systematic arrangement, classification, documentation and management of information collected from different sources so that it can be understood, evaluated and reused.</p>
-<p>It helps a student to synthesize evidence, identify relationships, compare different perspectives and construct coherent arguments.</p>
+    <p>
+        Information literacy therefore involves finding, understanding, evaluating,
+        using and creating information.
+    </p>
 
-<h3>8. Ethical Use of Information</h3>
-<p>Information should be used responsibly and ethically. Users should acknowledge their sources, respect copyright and avoid plagiarism.</p>
 
-<h3>9. Creating New Knowledge</h3>
-<p>Information literacy also involves using information through analysis and synthesis to develop new understanding or knowledge.</p>
+    <!-- 2 -->
+    <h3>2. Components of Information Literacy</h3>
+
+    <p>The major components discussed in LIS211 include:</p>
+
+    <ol>
+        <li>Identifying information needs</li>
+        <li>Locating information</li>
+        <li>Searching for information</li>
+        <li>Evaluating information</li>
+        <li>Organizing information</li>
+        <li>Using information ethically</li>
+        <li>Creating new knowledge</li>
+    </ol>
+
+    <p>
+        These components are connected. Information literacy is not always a straight-line
+        process. While searching or evaluating information, a person may discover a new
+        question and return to the information need or search again.
+    </p>
+
+
+    <!-- 3 -->
+    <h3>3. Identifying Information Needs</h3>
+
+    <p>
+        An <strong>information need</strong> is the gap between what a person already knows
+        and what the person needs to know.
+    </p>
+
+    <p>Information may be needed to:</p>
+
+    <ul>
+        <li>Answer a question</li>
+        <li>Solve a problem</li>
+        <li>Make a decision</li>
+        <li>Complete a task</li>
+        <li>Understand an issue</li>
+        <li>Conduct research</li>
+        <li>Develop new knowledge</li>
+    </ul>
+
+    <h4>Examples of Information Needs</h4>
+
+    <p><strong>Health:</strong> A person may need information to understand a health issue or make an informed health decision.</p>
+
+    <p><strong>Finances:</strong> A person may need financial information to understand how to manage money or make financial decisions.</p>
+
+    <p><strong>Employment:</strong> A person may need information about available jobs, qualifications, applications and employment opportunities.</p>
+
+    <p><strong>Politics:</strong> A person may need information about political issues, public policies, leaders, elections and government activities.</p>
+
+    <p><strong>Education:</strong> A student needs information about courses, assignments, examinations and research.</p>
+
+
+    <!-- 4 -->
+    <h3>4. Understanding the Information Need</h3>
+
+    <p>Before searching, the information need should be clearly understood.</p>
+
+    <p>Consider:</p>
+
+    <ul>
+        <li>What exactly do I want to know?</li>
+        <li>What problem am I trying to solve?</li>
+        <li>What question am I answering?</li>
+        <li>What is the scope of the information?</li>
+        <li>What key concepts are involved?</li>
+        <li>How much information do I need?</li>
+        <li>What type of information do I need?</li>
+        <li>Who is the information for?</li>
+        <li>What will the information be used for?</li>
+    </ul>
+
+    <p>
+        A clearly defined information need makes searching more effective.
+    </p>
+
+
+    <!-- 5 -->
+    <h3>5. Locating Information</h3>
+
+    <p>
+        After identifying an information need, the next step is to locate appropriate information.
+    </p>
+
+    <p>Information can be found in:</p>
+
+    <ul>
+        <li>Books</li>
+        <li>Academic journals</li>
+        <li>Newspapers</li>
+        <li>Websites</li>
+        <li>Databases</li>
+        <li>Government publications</li>
+        <li>Reports</li>
+        <li>Archives</li>
+        <li>Institutional repositories</li>
+        <li>Digital libraries</li>
+        <li>Other information resources</li>
+    </ul>
+
+    <p>
+        Different sources have different strengths and limitations. Therefore,
+        an information user must choose sources according to the information need.
+    </p>
+
+
+    <!-- 6 -->
+    <h3>6. Academic Information Databases</h3>
+
+    <p>
+        Academic databases are important sources for scholarly information.
+    </p>
+
+    <p>Examples include:</p>
+
+    <ul>
+        <li><strong>Scopus</strong></li>
+        <li><strong>Web of Science</strong></li>
+        <li><strong>JSTOR</strong></li>
+        <li><strong>EBSCO</strong></li>
+    </ul>
+
+    <p>
+        Databases can help researchers locate scholarly articles and other academic information.
+        However, finding an article in a database does not automatically mean that the information
+        is suitable. The information must still be evaluated.
+    </p>
+
+
+    <!-- 7 -->
+    <h3>7. Searching for Information</h3>
+
+    <p>
+        Searching is not simply typing words into Google and accepting the first result.
+    </p>
+
+    <p>An effective search requires a <strong>search strategy</strong>.</p>
+
+    <p>A search strategy may include:</p>
+
+    <ul>
+        <li>Identifying keywords</li>
+        <li>Identifying important concepts</li>
+        <li>Finding synonyms and alternative terms</li>
+        <li>Using controlled vocabulary</li>
+        <li>Combining search terms</li>
+        <li>Using appropriate databases</li>
+        <li>Applying inclusion criteria</li>
+        <li>Applying exclusion criteria</li>
+        <li>Refining the search</li>
+        <li>Evaluating search results</li>
+    </ul>
+
+
+    <!-- 8 -->
+    <h3>8. Keywords</h3>
+
+    <p>
+        Keywords are important words or phrases that represent the main ideas in an information need.
+    </p>
+
+    <p>
+        For example, if the topic is:
+    </p>
+
+    <blockquote>
+        “The effect of social media on university students' academic performance”
+    </blockquote>
+
+    <p>Possible keywords include:</p>
+
+    <ul>
+        <li>Social media</li>
+        <li>University students</li>
+        <li>Academic performance</li>
+        <li>Students</li>
+        <li>Academic achievement</li>
+    </ul>
+
+    <p>
+        Different keywords can produce different search results. Therefore,
+        choosing appropriate keywords is an important part of information searching.
+    </p>
+
+
+    <!-- 9 -->
+    <h3>9. Controlled Vocabulary</h3>
+
+    <p>
+        A <strong>controlled vocabulary</strong> is a standardized set of terms used to
+        describe information consistently.
+    </p>
+
+    <p>
+        Controlled vocabulary can help users find information even when different authors
+        use different words for the same concept.
+    </p>
+
+    <p>
+        It is particularly useful in organized information systems and databases.
+    </p>
+
+
+    <!-- 10 -->
+    <h3>10. Inclusion and Exclusion Criteria</h3>
+
+    <h4>Inclusion Criteria</h4>
+
+    <p>
+        These are conditions that information must meet to be included.
+    </p>
+
+    <ul>
+        <li>Relevant to the research question</li>
+        <li>Published within a selected period</li>
+        <li>Scholarly source</li>
+        <li>Available in a required language</li>
+    </ul>
+
+    <h4>Exclusion Criteria</h4>
+
+    <p>
+        These are conditions that cause information to be left out.
+    </p>
+
+    <ul>
+        <li>Not relevant</li>
+        <li>Poor-quality source</li>
+        <li>Outside the selected time period</li>
+        <li>Does not address the research question</li>
+    </ul>
+
+    <p>
+        Inclusion and exclusion criteria help make searching more focused.
+    </p>
+
+
+    <!-- 11 -->
+    <h3>11. Refining a Search</h3>
+
+    <p>Sometimes a search produces too many results.</p>
+
+    <p>The search can be narrowed by:</p>
+
+    <ul>
+        <li>Adding more specific keywords</li>
+        <li>Limiting the date</li>
+        <li>Selecting a particular database</li>
+        <li>Selecting a particular type of source</li>
+        <li>Using additional search terms</li>
+    </ul>
+
+    <p>Sometimes a search produces too few results.</p>
+
+    <p>The search can be broadened by:</p>
+
+    <ul>
+        <li>Removing unnecessary terms</li>
+        <li>Using synonyms</li>
+        <li>Using broader concepts</li>
+        <li>Searching another database</li>
+    </ul>
+
+    <p>
+        Searching is therefore an <strong>iterative process</strong>.
+    </p>
+
+
+    <!-- 12 -->
+    <h3>12. Evaluating Information</h3>
+
+    <p>
+        Finding information does not mean that the information is automatically reliable.
+        Information must be evaluated before it is used.
+    </p>
+
+    <p>Important evaluation considerations include:</p>
+
+    <ul>
+        <li>Credibility</li>
+        <li>Relevance</li>
+        <li>Authority</li>
+        <li>Accuracy</li>
+        <li>Currency</li>
+        <li>Evidence</li>
+        <li>Purpose</li>
+    </ul>
+
+
+    <!-- 13 -->
+    <h3>13. CRAAP Test</h3>
+
+    <p>
+        The <strong>CRAAP Test</strong> is a framework used to evaluate information sources.
+    </p>
+
+    <ul>
+        <li><strong>C — Currency:</strong> How recent is the information?</li>
+        <li><strong>R — Relevance:</strong> Is the information relevant to the information need?</li>
+        <li><strong>A — Authority:</strong> Who created the information?</li>
+        <li><strong>A — Accuracy:</strong> Is the information accurate and supported by evidence?</li>
+        <li><strong>P — Purpose:</strong> Why was the information created?</li>
+    </ul>
+
+    <h4>Currency</h4>
+
+    <p>Ask:</p>
+
+    <ul>
+        <li>When was it published?</li>
+        <li>Has it been updated?</li>
+        <li>Is the information current enough for the topic?</li>
+    </ul>
+
+    <h4>Relevance</h4>
+
+    <p>Ask:</p>
+
+    <ul>
+        <li>Does it answer my question?</li>
+        <li>Is it appropriate for my purpose?</li>
+        <li>Is the level appropriate?</li>
+    </ul>
+
+    <h4>Authority</h4>
+
+    <p>Consider:</p>
+
+    <ul>
+        <li>Author</li>
+        <li>Qualifications</li>
+        <li>Institution</li>
+        <li>Expertise</li>
+        <li>Publisher</li>
+    </ul>
+
+    <h4>Accuracy</h4>
+
+    <p>Ask:</p>
+
+    <ul>
+        <li>Is evidence provided?</li>
+        <li>Can the claims be verified?</li>
+        <li>Are there errors?</li>
+        <li>Do reliable sources support the information?</li>
+    </ul>
+
+    <h4>Purpose</h4>
+
+    <p>The purpose may be to:</p>
+
+    <ul>
+        <li>Inform</li>
+        <li>Educate</li>
+        <li>Persuade</li>
+        <li>Sell</li>
+        <li>Entertain</li>
+        <li>Influence</li>
+    </ul>
+
+
+    <!-- 14 -->
+    <h3>14. Authority Is Constructed and Contextual</h3>
+
+    <p>
+        Authority should not simply be accepted because a person, website or institution
+        appears important.
+    </p>
+
+    <p>
+        Authority is <strong>constructed and contextual</strong>.
+    </p>
+
+    <p>
+        This means that what makes someone authoritative depends partly on:
+    </p>
+
+    <ul>
+        <li>The subject</li>
+        <li>The situation</li>
+        <li>The purpose</li>
+        <li>The evidence</li>
+        <li>The community</li>
+        <li>The context in which the information is being used</li>
+    </ul>
+
+    <p>
+        Therefore, information users should consider both the creator and the context
+        of the information.
+    </p>
+
+
+    <!-- 15 -->
+    <h3>15. Comparing Information Sources</h3>
+
+    <p>
+        One source should not always be accepted without comparison.
+        Reliable information can be compared with other independent sources.
+    </p>
+
+    <p>Comparing sources can help identify:</p>
+
+    <ul>
+        <li>Agreement</li>
+        <li>Contradictions</li>
+        <li>Errors</li>
+        <li>Missing evidence</li>
+        <li>Different perspectives</li>
+    </ul>
+
+    <p>
+        This is especially important when information is important or controversial.
+    </p>
+
+
+    <!-- 16 -->
+    <h3>16. Information Quality</h3>
+
+    <p>
+        Information quality refers to how suitable, reliable, accurate and useful
+        information is for a particular purpose.
+    </p>
+
+    <p>Quality information should be:</p>
+
+    <ul>
+        <li>Relevant</li>
+        <li>Accurate</li>
+        <li>Reliable</li>
+        <li>Supported by evidence</li>
+        <li>Appropriate for the purpose</li>
+        <li>Sufficiently current where currency matters</li>
+    </ul>
+
+    <p>
+        The fact that information is repeated many times does not automatically make it true.
+        Information being popular does not automatically make it reliable.
+    </p>
+
+
+    <!-- 17 -->
+    <h3>17. Misinformation</h3>
+
+    <p>
+        <strong>Misinformation</strong> is false or inaccurate information that is shared
+        without necessarily intending to deceive.
+    </p>
+
+    <p>
+        A person may share incorrect information because they believe it is true.
+    </p>
+
+
+    <!-- 18 -->
+    <h3>18. Disinformation</h3>
+
+    <p>
+        <strong>Disinformation</strong> is false or misleading information that is deliberately
+        created or shared to deceive or mislead people.
+    </p>
+
+    <p>
+        The important difference is the element of intentional deception.
+    </p>
+
+
+    <!-- 19 -->
+    <h3>19. Deepfakes</h3>
+
+    <p>
+        Deepfakes are manipulated or artificially generated media that can make people appear
+        to say or do things that they did not actually say or do.
+    </p>
+
+    <p>Deepfakes can involve:</p>
+
+    <ul>
+        <li>Video</li>
+        <li>Audio</li>
+        <li>Images</li>
+    </ul>
+
+    <p>
+        Because digital technologies can create convincing content,
+        information users must verify important information.
+    </p>
+
+
+    <!-- 20 -->
+    <h3>20. Artificial Intelligence and Information</h3>
+
+    <p>
+        Artificial intelligence can generate text, images, audio, video and other digital content.
+    </p>
+
+    <p>
+        AI-generated content may appear convincing but can still contain errors or false information.
+    </p>
+
+    <p>Therefore, information users should:</p>
+
+    <ul>
+        <li>Question information</li>
+        <li>Check sources</li>
+        <li>Verify important claims</li>
+        <li>Compare independent sources</li>
+        <li>Consider the purpose of the information</li>
+    </ul>
+
+    <p>
+        AI content should not automatically be accepted simply because it looks professional.
+    </p>
+
+
+    <!-- 21 -->
+    <h3>21. Information Overload</h3>
+
+    <p>
+        Modern society produces enormous amounts of information.
+    </p>
+
+    <p>Information comes from:</p>
+
+    <ul>
+        <li>Websites</li>
+        <li>Social media</li>
+        <li>Books</li>
+        <li>Journals</li>
+        <li>News</li>
+        <li>Digital libraries</li>
+        <li>Databases</li>
+        <li>AI systems</li>
+        <li>Government sources</li>
+        <li>Other digital platforms</li>
+    </ul>
+
+    <p>
+        The large amount of information can create <strong>information overload</strong>.
+    </p>
+
+    <p>
+        Information overload occurs when the amount of available information becomes difficult
+        for a person to process effectively.
+    </p>
+
+    <p>
+        Information literacy helps people identify what is relevant and avoid unnecessary information.
+    </p>
+
+
+    <!-- 22 -->
+    <h3>22. Organizing Information</h3>
+
+    <p>
+        Organizing information refers to the systematic arrangement, classification,
+        documentation and management of collected information.
+    </p>
+
+    <p>Organizing information helps a person to:</p>
+
+    <ul>
+        <li>Understand information</li>
+        <li>Find information again</li>
+        <li>Compare sources</li>
+        <li>Identify relationships</li>
+        <li>Identify patterns</li>
+        <li>Synthesize evidence</li>
+        <li>Develop arguments</li>
+        <li>Reuse information</li>
+    </ul>
+
+
+    <!-- 23 -->
+    <h3>23. Information Ethics</h3>
+
+    <p>
+        Information ethics concerns the responsible and ethical use of information.
+    </p>
+
+    <p>Important principles include:</p>
+
+    <ul>
+        <li>Honesty</li>
+        <li>Respect for intellectual ownership</li>
+        <li>Academic integrity</li>
+        <li>Trust</li>
+        <li>Transparency</li>
+        <li>Accountability</li>
+        <li>Responsible use of information</li>
+    </ul>
+
+    <p>
+        Information should not be deliberately manipulated or misrepresented.
+    </p>
+
+
+    <!-- 24 -->
+    <h3>24. Intellectual Ownership</h3>
+
+    <p>
+        Information and ideas may belong to the people who created them.
+    </p>
+
+    <p>
+        Respecting intellectual ownership means recognizing the contribution of creators
+        and acknowledging their work.
+    </p>
+
+    <p>
+        Students should therefore properly acknowledge information obtained from other people.
+    </p>
+
+
+    <!-- 25 -->
+    <h3>25. Academic Integrity</h3>
+
+    <p>
+        Academic integrity means being honest and responsible in academic work.
+    </p>
+
+    <p>A student should:</p>
+
+    <ul>
+        <li>Use information honestly</li>
+        <li>Give credit to sources</li>
+        <li>Avoid plagiarism</li>
+        <li>Avoid presenting another person's work as their own</li>
+        <li>Provide accurate references</li>
+        <li>Avoid deliberately falsifying information</li>
+    </ul>
+
+    <p>
+        Academic integrity builds trust in academic work.
+    </p>
+
+
+    <!-- 26 -->
+    <h3>26. Plagiarism</h3>
+
+    <p>
+        Plagiarism occurs when someone presents another person's words, ideas or work
+        as their own without appropriate acknowledgement.
+    </p>
+
+    <p>Plagiarism can be avoided by:</p>
+
+    <ul>
+        <li>Citing sources</li>
+        <li>Referencing sources</li>
+        <li>Using quotation marks for direct quotations</li>
+        <li>Paraphrasing properly</li>
+        <li>Acknowledging ideas from other authors</li>
+    </ul>
+
+
+    <!-- 27 -->
+    <h3>27. Citation and Referencing</h3>
+
+    <p>
+        Citation gives credit to the source of information or ideas.
+        Referencing provides information that allows readers to identify the source.
+    </p>
+
+    <p>Citation and referencing:</p>
+
+    <ul>
+        <li>Support academic integrity</li>
+        <li>Give credit to authors</li>
+        <li>Allow verification</li>
+        <li>Strengthen arguments</li>
+        <li>Show evidence used in academic work</li>
+    </ul>
+
+
+    <!-- 28 -->
+    <h3>28. Trust, Transparency and Accountability</h3>
+
+    <p><strong>Trust:</strong> Users should be able to rely on information and the people providing it.</p>
+
+    <p><strong>Transparency:</strong> Information and its sources should be clear enough for people to understand where it came from and how it was produced.</p>
+
+    <p><strong>Accountability:</strong> People and institutions should take responsibility for information they produce, use or distribute.</p>
+
+
+    <!-- 29 -->
+    <h3>29. Critical Thinking</h3>
+
+    <p>
+        Critical thinking is the careful examination and analysis of information before
+        accepting or using it.
+    </p>
+
+    <p>A critical thinker asks:</p>
+
+    <ul>
+        <li>What is the evidence?</li>
+        <li>Who produced this information?</li>
+        <li>Why was it produced?</li>
+        <li>Is the claim supported?</li>
+        <li>Are there other perspectives?</li>
+        <li>Can the information be verified?</li>
+        <li>What might be missing?</li>
+        <li>Does another reliable source support the claim?</li>
+    </ul>
+
+    <p>
+        Critical thinking prevents people from accepting information simply because
+        it is popular or confidently presented.
+    </p>
+
+
+    <!-- 30 -->
+    <h3>30. Information Literacy and Critical Thinking</h3>
+
+    <p>
+        Information literacy and critical thinking work together.
+    </p>
+
+    <p>
+        A person may find information, but critical thinking is needed to determine:
+    </p>
+
+    <ul>
+        <li>Whether it is reliable</li>
+        <li>Whether it is relevant</li>
+        <li>Whether evidence supports it</li>
+        <li>Whether different perspectives exist</li>
+        <li>How it should be used</li>
+    </ul>
+
+    <p>
+        Therefore, an information-literate person should be an active and critical user of information.
+    </p>
+
+
+    <!-- 31 -->
+    <h3>31. Creating New Knowledge</h3>
+
+    <p>
+        Creating new knowledge is an important part of information literacy.
+    </p>
+
+    <p>
+        It does not simply mean copying or summarizing information from different authors.
+    </p>
+
+    <p>Creating new knowledge involves:</p>
+
+    <ol>
+        <li>Finding information</li>
+        <li>Examining different sources</li>
+        <li>Comparing information</li>
+        <li>Synthesizing ideas</li>
+        <li>Identifying relationships</li>
+        <li>Identifying gaps in existing knowledge</li>
+        <li>Applying existing knowledge to a problem</li>
+        <li>Developing new explanations, arguments, models or conceptual ideas</li>
+        <li>Communicating the new understanding</li>
+    </ol>
+
+
+    <!-- 32 -->
+    <h3>32. Synthesis</h3>
+
+    <p>
+        <strong>Synthesis</strong> means bringing information and ideas from different
+        sources together to develop a broader understanding.
+    </p>
+
+    <div class="example-box">
+        <strong>Example:</strong><br><br>
+        Source A + Source B + Source C
+        → Analysis and synthesis
+        → New understanding
+    </div>
+
+    <p>
+        Synthesis is different from simply listing what each author said.
+        The student should identify relationships between ideas and develop a meaningful understanding.
+    </p>
+
+
+    <!-- 33 -->
+    <h3>33. Identifying Gaps in Knowledge</h3>
+
+    <p>
+        Existing authors may leave questions unanswered.
+        A knowledge gap is an area where information or understanding is still incomplete.
+    </p>
+
+    <p>An information-literate researcher can:</p>
+
+    <ul>
+        <li>Examine existing literature</li>
+        <li>Identify what has already been studied</li>
+        <li>Identify what has not been adequately explained</li>
+        <li>Develop a question around the gap</li>
+        <li>Investigate the issue</li>
+        <li>Contribute new understanding</li>
+    </ul>
+
+
+    <!-- 34 -->
+    <h3>34. Creating New Explanations and Ideas</h3>
+
+    <p>New knowledge may take different forms, including:</p>
+
+    <ul>
+        <li>New explanations</li>
+        <li>New arguments</li>
+        <li>New models</li>
+        <li>New interpretations</li>
+        <li>New solutions</li>
+        <li>Conceptual ideas</li>
+        <li>Research findings</li>
+    </ul>
+
+    <p>
+        Therefore, information literacy contributes to knowledge building.
+    </p>
+
+
+    <!-- 35 -->
+    <h3>35. Information Literacy Is Not Linear</h3>
+
+    <p>
+        Information literacy should not always be viewed as a straight process.
+    </p>
+
+    <div class="process-box">
+        Identify Need → Search → Evaluate → Find New Information
+        → Discover New Question → Search Again → Re-evaluate
+        → Organize → Synthesize → Create Knowledge
+    </div>
+
+    <p>
+        The learner may move backwards and forwards between activities.
+        This makes information literacy a <strong>non-linear process</strong>.
+    </p>
+
+
+    <!-- 36 -->
+    <h3>36. Interdisciplinary Integration</h3>
+
+    <p>
+        Creating new knowledge may require information from different disciplines.
+    </p>
+
+    <p>A researcher may combine ideas from different fields to understand a problem.</p>
+
+    <p>This requires:</p>
+
+    <ul>
+        <li>Comparing different sources</li>
+        <li>Understanding different perspectives</li>
+        <li>Integrating evidence</li>
+        <li>Identifying relationships</li>
+        <li>Developing a broader interpretation</li>
+    </ul>
+
+    <p>
+        This is why critical thinking and information literacy are closely connected.
+    </p>
+
+
+    <!-- 37 -->
+    <h3>37. SCARA Framework</h3>
+
+    <p>
+        The SCARA framework presents information work as:
+    </p>
+
+    <ul>
+        <li><strong>Interactive</strong></li>
+        <li><strong>Iterative</strong></li>
+        <li><strong>Constructive</strong></li>
+    </ul>
+
+    <h4>Interactive</h4>
+
+    <p>The learner interacts with:</p>
+
+    <ul>
+        <li>Information sources</li>
+        <li>Research methods</li>
+        <li>Other people</li>
+        <li>Existing knowledge</li>
+    </ul>
+
+    <h4>Iterative</h4>
+
+    <p>
+        The process may be repeated several times.
+        A learner may search, evaluate, return to the question, search again
+        and revise their understanding.
+    </p>
+
+    <h4>Constructive</h4>
+
+    <p>
+        The learner does not simply collect information.
+        The learner uses information to construct:
+    </p>
+
+    <ul>
+        <li>Understanding</li>
+        <li>Arguments</li>
+        <li>Interpretations</li>
+        <li>Solutions</li>
+        <li>New knowledge</li>
+    </ul>
+
+
+    <!-- 38 -->
+    <h3>38. Information Literacy as an Interactive Process</h3>
+
+    <p>
+        Information literacy involves continuous interaction between:
+    </p>
+
+    <ul>
+        <li>The information user</li>
+        <li>Information sources</li>
+        <li>Questions</li>
+        <li>Search strategies</li>
+        <li>Evidence</li>
+        <li>Existing knowledge</li>
+        <li>New knowledge</li>
+    </ul>
+
+    <p>
+        As the learner discovers new information, the original understanding may change.
+        Therefore, information literacy is an ongoing process.
+    </p>
+
+
+    <!-- 39 -->
+    <h3>39. Information Literacy in Everyday Life</h3>
+
+    <p>
+        Information literacy is not only for university students.
+        People need information in everyday life.
+    </p>
+
+    <h4>Health</h4>
+    <p>
+        People need reliable information to understand health issues and make informed decisions.
+    </p>
+
+    <h4>Finances</h4>
+    <p>
+        People need financial information to manage money and make financial decisions.
+    </p>
+
+    <h4>Employment</h4>
+    <p>
+        People need information about jobs, qualifications and employment opportunities.
+    </p>
+
+    <h4>Politics</h4>
+    <p>
+        People need information about political issues, policies, leaders and public affairs.
+    </p>
+
+    <h4>Education</h4>
+    <p>
+        Students need information to study, research and make educational decisions.
+    </p>
+
+
+    <!-- 40 -->
+    <h3>40. Information-Rich Classes and Communities</h3>
+
+    <p>
+        Information-rich classes or communities have access to information and are able
+        to use it effectively.
+    </p>
+
+    <p>Information can help communities understand:</p>
+
+    <ul>
+        <li>What is happening around them</li>
+        <li>Public issues</li>
+        <li>Government activities</li>
+        <li>Community problems</li>
+        <li>Their rights and responsibilities</li>
+    </ul>
+
+    <p>
+        Access to useful information can support informed participation in society.
+    </p>
+
+
+    <!-- 41 -->
+    <h3>41. Informed Citizenship</h3>
+
+    <p>
+        Information literacy contributes to <strong>informed citizenship</strong>.
+    </p>
+
+    <p>
+        An informed citizen can seek and evaluate information before making decisions
+        about public issues.
+    </p>
+
+    <p>Information can help citizens understand:</p>
+
+    <ul>
+        <li>Public affairs</li>
+        <li>Government activities</li>
+        <li>Policies</li>
+        <li>Community issues</li>
+        <li>Their rights</li>
+        <li>Their responsibilities</li>
+    </ul>
+
+
+    <!-- 42 -->
+    <h3>42. Responsible Voting</h3>
+
+    <p>
+        Information literacy can also support responsible voting.
+    </p>
+
+    <p>
+        Voters need reliable information to understand political issues and make their
+        own decisions.
+    </p>
+
+    <p>They should not simply depend on:</p>
+
+    <ul>
+        <li>Rumours</li>
+        <li>False information</li>
+        <li>Manipulated content</li>
+        <li>Unverified social media posts</li>
+    </ul>
+
+    <p>
+        They should evaluate information and verify important claims.
+    </p>
+
+
+    <!-- 43 -->
+    <h3>43. Transparency and Accountability</h3>
+
+    <p>
+        Access to information can contribute to transparency and accountability.
+    </p>
+
+    <p>
+        When people have relevant and reliable information, they can better understand
+        what institutions and leaders are doing.
+    </p>
+
+    <p>Information can therefore support:</p>
+
+    <ul>
+        <li>Public awareness</li>
+        <li>Accountability</li>
+        <li>Transparency</li>
+        <li>Participation</li>
+        <li>Informed decision-making</li>
+    </ul>
+
+
+    <!-- 44 -->
+    <h3>44. Identity Theft and Fraud</h3>
+
+    <p>
+        Information literacy is also important for protecting people from information-related
+        risks such as identity theft and fraud.
+    </p>
+
+    <p>
+        <strong>Identity theft</strong> involves using another person's personal information
+        while pretending to be that person.
+    </p>
+
+    <p>
+        <strong>Financial fraud</strong> involves the use of false or misleading information
+        to obtain money illegally.
+    </p>
+
+    <p>People should be careful when sharing personal information.</p>
+
+    <p>Examples of information that may need protection include:</p>
+
+    <ul>
+        <li>Passwords</li>
+        <li>Account details</li>
+        <li>Identification information</li>
+        <li>Financial information</li>
+        <li>Personal documents</li>
+    </ul>
+
+    <p>
+        Users should verify requests for personal information before responding.
+    </p>
+
+
+    <!-- 45 -->
+    <h3>45. Responsible Use of Information</h3>
+
+    <p>Responsible information users should:</p>
+
+    <ul>
+        <li>Verify important information</li>
+        <li>Protect personal information</li>
+        <li>Respect intellectual ownership</li>
+        <li>Cite sources</li>
+        <li>Avoid plagiarism</li>
+        <li>Avoid spreading false information</li>
+        <li>Consider the purpose of information</li>
+        <li>Respect copyright</li>
+        <li>Use reliable sources</li>
+        <li>Think critically before sharing information</li>
+    </ul>
+
+
+    <!-- 46 -->
+    <h3>46. Information Verification</h3>
+
+    <p>
+        Verification means checking information before accepting or sharing it.
+    </p>
+
+    <p>Verification can involve:</p>
+
+    <ul>
+        <li>Checking the original source</li>
+        <li>Comparing independent reliable sources</li>
+        <li>Checking evidence</li>
+        <li>Checking the date</li>
+        <li>Checking the author</li>
+        <li>Examining the purpose</li>
+        <li>Looking for supporting evidence</li>
+    </ul>
+
+    <p>
+        Verification is particularly important for information found through social media
+        and other digital platforms.
+    </p>
+
+
+    <!-- 47 -->
+    <h3>47. Information Literacy and Problem Solving</h3>
+
+    <p>
+        Information literacy supports problem solving.
+    </p>
+
+    <div class="process-box">
+        Identify Problem
+        → Identify Information Need
+        → Search
+        → Evaluate
+        → Organize
+        → Analyse
+        → Apply Information
+        → Develop Solution
+    </div>
+
+    <p>
+        Good information helps people make better-informed decisions.
+    </p>
+
+
+    <!-- 48 -->
+    <h3>48. Information Literacy and Decision Making</h3>
+
+    <p>
+        Decision making requires appropriate information.
+    </p>
+
+    <p>Before making a decision, an information user should consider:</p>
+
+    <ul>
+        <li>What information is needed?</li>
+        <li>Which sources are reliable?</li>
+        <li>What evidence is available?</li>
+        <li>Are there different perspectives?</li>
+        <li>Is the information current?</li>
+        <li>Can the information be verified?</li>
+    </ul>
+
+    <p>
+        The quality of a decision can depend on the quality and relevance of the information available.
+    </p>
+
+
+    <!-- 49 -->
+    <h3>49. Overall Information Literacy Process</h3>
+
+    <div class="process-box">
+
+        <strong>1. Identify the information need</strong><br>
+        ↓<br>
+        <strong>2. Define the question or problem</strong><br>
+        ↓<br>
+        <strong>3. Develop a search strategy</strong><br>
+        ↓<br>
+        <strong>4. Locate information</strong><br>
+        ↓<br>
+        <strong>5. Evaluate information</strong><br>
+        ↓<br>
+        <strong>6. Compare and verify sources</strong><br>
+        ↓<br>
+        <strong>7. Organize information</strong><br>
+        ↓<br>
+        <strong>8. Use information ethically</strong><br>
+        ↓<br>
+        <strong>9. Analyse and synthesize information</strong><br>
+        ↓<br>
+        <strong>10. Identify gaps</strong><br>
+        ↓<br>
+        <strong>11. Create new knowledge</strong>
+
+    </div>
+
+    <p>
+        <strong>Important:</strong> This is not always a straight-line process.
+        The learner may return to an earlier stage whenever new information or a new
+        question appears.
+    </p>
+
+
+    <!-- 50 -->
+    <h3>50. Final Summary</h3>
+
+    <p>
+        Information literacy is the ability to recognize an information need,
+        locate appropriate information, search effectively, evaluate information,
+        organize it, use it ethically and create new knowledge.
+    </p>
+
+    <p>
+        It requires more than finding information.
+    </p>
+
+    <div class="summary-box">
+
+        <strong>Find → Evaluate → Verify → Organize → Use Ethically
+        → Analyse → Synthesize → Create Knowledge</strong>
+
+    </div>
+
+    <p>
+        In today's information environment, information literacy is especially important
+        because people face:
+    </p>
+
+    <ul>
+        <li>Information overload</li>
+        <li>Misinformation</li>
+        <li>Disinformation</li>
+        <li>Deepfakes</li>
+        <li>AI-generated content</li>
+        <li>Online fraud</li>
+        <li>Identity theft</li>
+        <li>Unverified social media information</li>
+    </ul>
+
+    <p>
+        Information literacy therefore supports academic success, research,
+        critical thinking, problem solving, informed decision-making,
+        responsible citizenship and the creation of new knowledge.
+    </p>
+
 </div>
 
+<!-- =========================
+     END OF LIS211 NOTES
+========================= -->
+<!-- QUIZ -->
+
 <div class="content-box">
+
 <h2>❓ LIS211 Multiple Choice Quiz</h2>
-<p>Answer the questions and click <strong>Submit Quiz</strong>.</p>
 
-<div class="question"><p><strong>1. Information literacy goes beyond:</strong></p>
-<label><input type="radio" name="q1" value="A">A. Finding information online</label>
-<label><input type="radio" name="q1" value="B">B. Understanding information</label>
-<label><input type="radio" name="q1" value="C">C. Evaluating information</label>
-<label><input type="radio" name="q1" value="D">D. Creating knowledge</label></div>
+<p>
+Answer the questions and click
+<strong>Submit Quiz</strong>.
+</p>
 
-<div class="question"><p><strong>2. An information need is best described as:</strong></p>
-<label><input type="radio" name="q2" value="A">A. The gap between what is known and what is needed</label>
-<label><input type="radio" name="q2" value="B">B. A library building</label>
-<label><input type="radio" name="q2" value="C">C. A computer</label>
-<label><input type="radio" name="q2" value="D">D. A bookshelf</label></div>
+<div class="question">
 
-<div class="question"><p><strong>3. Which is an academic database?</strong></p>
-<label><input type="radio" name="q3" value="A">A. Scopus</label>
-<label><input type="radio" name="q3" value="B">B. Calculator</label>
-<label><input type="radio" name="q3" value="C">C. Paint</label>
-<label><input type="radio" name="q3" value="D">D. Notepad</label></div>
+<p><strong>1. Information literacy goes beyond:</strong></p>
 
-<div class="question"><p><strong>4. What does the C in CRAAP stand for?</strong></p>
-<label><input type="radio" name="q4" value="A">A. Currency</label>
-<label><input type="radio" name="q4" value="B">B. Computer</label>
-<label><input type="radio" name="q4" value="C">C. Classification</label>
-<label><input type="radio" name="q4" value="D">D. Collection</label></div>
+<label>
+<input type="radio" name="q1" value="A">
+A. Finding information online
+</label>
 
-<div class="question"><p><strong>5. Which is important when evaluating information?</strong></p>
-<label><input type="radio" name="q5" value="A">A. Accuracy</label>
-<label><input type="radio" name="q5" value="B">B. Colour of the book</label>
-<label><input type="radio" name="q5" value="C">C. Size of the library</label>
-<label><input type="radio" name="q5" value="D">D. Shape of the computer</label></div>
+<label>
+<input type="radio" name="q1" value="B">
+B. Understanding information
+</label>
 
-<button class="submit-quiz" onclick="markQuiz()">✅ Submit Quiz</button>
-<div id="quizResult" class="result"></div>
+<label>
+<input type="radio" name="q1" value="C">
+C. Evaluating information
+</label>
+
+<label>
+<input type="radio" name="q1" value="D">
+D. Creating knowledge
+</label>
+
 </div>
+
+<div class="question">
+
+<p><strong>2. An information need is best described as:</strong></p>
+
+<label>
+<input type="radio" name="q2" value="A">
+A. The gap between what is known and what is needed
+</label>
+
+<label>
+<input type="radio" name="q2" value="B">
+B. A library building
+</label>
+
+<label>
+<input type="radio" name="q2" value="C">
+C. A computer
+</label>
+
+<label>
+<input type="radio" name="q2" value="D">
+D. A bookshelf
+</label>
+
+</div>
+
+<div class="question">
+
+<p><strong>3. Which is an academic database?</strong></p>
+
+<label>
+<input type="radio" name="q3" value="A">
+A. Scopus
+</label>
+
+<label>
+<input type="radio" name="q3" value="B">
+B. Calculator
+</label>
+
+<label>
+<input type="radio" name="q3" value="C">
+C. Paint
+</label>
+
+<label>
+<input type="radio" name="q3" value="D">
+D. Notepad
+</label>
+
+</div>
+
+<div class="question">
+
+<p><strong>4. What does the C in CRAAP stand for?</strong></p>
+
+<label>
+<input type="radio" name="q4" value="A">
+A. Currency
+</label>
+
+<label>
+<input type="radio" name="q4" value="B">
+B. Computer
+</label>
+
+<label>
+<input type="radio" name="q4" value="C">
+C. Classification
+</label>
+
+<label>
+<input type="radio" name="q4" value="D">
+D. Collection
+</label>
+
+</div>
+
+<div class="question">
+
+<p><strong>5. Which is important when evaluating information?</strong></p>
+
+<label>
+<input type="radio" name="q5" value="A">
+A. Accuracy
+</label>
+
+<label>
+<input type="radio" name="q5" value="B">
+B. Colour of the book
+</label>
+
+<label>
+<input type="radio" name="q5" value="C">
+C. Size of the library
+</label>
+
+<label>
+<input type="radio" name="q5" value="D">
+D. Shape of the computer
+</label>
+
+</div>
+
+<button class="submit-quiz" onclick="markQuiz()">
+✅ Submit Quiz
+</button>
+
+<div id="quizResult" class="result"></div>
+
+</div>
+
+</div>
+
 </div>
 
 <footer>
+
 <p>📚 Austine's LIS Study Hub</p>
+
 <p>University of Malawi | Library and Information Science</p>
+
 </footer>
+
 </div>
 
 <script>
-const SUPABASE_URL = "https://tvonlurjmtlpomtnzmyr.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_TnznOSRo3Rcs8_gwvbhs_Q_WsCeC3Sj";
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-);
+/* =====================================================
+   SUPABASE CONNECTION
+   ===================================================== */
 
-function showRegister(){
-    document.getElementById("loginForm").style.display="none";
-    document.getElementById("registerForm").style.display="block";
-    document.getElementById("authTitle").innerHTML="Create Account";
-    document.getElementById("authDescription").innerHTML="Create your account to access the LIS Study Hub.";
-    document.getElementById("message").innerHTML="";
+const SUPABASE_URL =
+    "https://tvonlurjmtnzmyr.supabase.co";
+
+
+/*sb_publishable_TnznOSRo3Rcs8_gwvbhs_Q_WsCeC3Sj
+*/
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_TnznOSRo3Rcs8_gwvbhs_Q_WsCeC3Sj";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+/* =====================================================
+   AUTH SCREEN
+   ===================================================== */
+
+function showRegister() {
+
+    document.getElementById("loginForm").style.display =
+        "none";
+
+    document.getElementById("registerForm").style.display =
+        "block";
+
+    document.getElementById("authTitle").innerHTML =
+        "Create Account";
+
+    document.getElementById("authDescription").innerHTML =
+        "Create your account to access the LIS Study Hub.";
+
+    document.getElementById("message").innerHTML = "";
+
 }
 
-function showLogin(){
-    document.getElementById("loginForm").style.display="block";
-    document.getElementById("registerForm").style.display="none";
-    document.getElementById("authTitle").innerHTML="LIS Study Hub";
-    document.getElementById("authDescription").innerHTML="Login to access your Library and Information Science study materials.";
-    document.getElementById("message").innerHTML="";
+
+function showLogin() {
+
+    document.getElementById("loginForm").style.display =
+        "block";
+
+    document.getElementById("registerForm").style.display =
+        "none";
+
+    document.getElementById("authTitle").innerHTML =
+        "LIS Study Hub";
+
+    document.getElementById("authDescription").innerHTML =
+        "Login to access your Library and Information Science study materials.";
+
+    document.getElementById("message").innerHTML = "";
+
 }
 
-async function register(){
-    const username=document.getElementById("registerUsername").value.trim();
-    const email=document.getElementById("registerEmail").value.trim();
-    const password=document.getElementById("registerPassword").value;
-    const confirmPassword=document.getElementById("confirmPassword").value;
-    const message=document.getElementById("message");
 
-    if(username===""||email===""||password===""||confirmPassword===""){
-        message.innerHTML="⚠️ Please fill in all fields.";
-        message.style.color="red";
+/* =====================================================
+   REGISTER
+   ===================================================== */
+async function register() {
+
+    let username = document.getElementById("registerUsername").value.trim();
+
+    let password = document.getElementById("registerPassword").value;
+
+    let confirmPassword = document.getElementById("confirmPassword").value;
+
+    let message = document.getElementById("message");
+
+
+    if (username === "" || password === "") {
+
+        message.innerHTML = "⚠️ Please fill in all fields.";
+        message.style.color = "red";
         return;
+
     }
 
-    if(password!==confirmPassword){
-        message.innerHTML="❌ Passwords do not match.";
-        message.style.color="red";
+
+    if (password !== confirmPassword) {
+
+        message.innerHTML = "❌ Passwords do not match.";
+        message.style.color = "red";
         return;
+
     }
 
-    if(password.length<6){
-        message.innerHTML="❌ Password must be at least 6 characters.";
-        message.style.color="red";
-        return;
-    }
 
-    message.innerHTML="⏳ Creating your account...";
-    message.style.color="#087f8c";
+    const email = username + "@lisstudyhub.com";
 
-    try{
-        const {data,error}=await supabaseClient.auth.signUp({
-            email:email,
-            password:password,
-            options:{data:{username:username}}
-        });
 
-        if(error){
-            message.innerHTML="❌ "+error.message;
-            message.style.color="red";
-            return;
+    const { data, error } = await supabaseClient.auth.signUp({
+
+        email: email,
+
+        password: password,
+
+        options: {
+            data: {
+                username: username
+            }
         }
 
-        if(data.user && !data.session){
-            message.innerHTML="✅ Account created! Check your email to confirm your account, then log in.";
-        }else{
-            message.innerHTML="✅ Account created successfully! You can now log in.";
-        }
+    });
 
-        message.style.color="green";
 
-    }catch(error){
-        console.error(error);
-        message.innerHTML="❌ Failed to connect to Supabase. Check your internet connection and Supabase settings.";
-        message.style.color="red";
-    }
-}
+    if (error) {
 
-async function login(){
-    const email=document.getElementById("loginEmail").value.trim();
-    const password=document.getElementById("loginPassword").value;
-    const message=document.getElementById("message");
-
-    if(email===""||password===""){
-        message.innerHTML="⚠️ Please enter your email and password.";
-        message.style.color="red";
+        message.innerHTML = "❌ " + error.message;
+        message.style.color = "red";
         return;
+
     }
 
-    message.innerHTML="⏳ Logging in...";
-    message.style.color="#087f8c";
 
-    try{
-        const {data,error}=await supabaseClient.auth.signInWithPassword({
-            email:email,
-            password:password
-        });
+    message.innerHTML = "✅ Account created successfully!";
 
-        if(error){
-            message.innerHTML="❌ "+error.message;
-            message.style.color="red";
-            return;
-        }
+    message.style.color = "green";
 
-        document.getElementById("auth").style.display="none";
-        document.getElementById("website").style.display="block";
-        showHome();
 
-    }catch(error){
-        console.error(error);
-        message.innerHTML="❌ Failed to connect to Supabase. Check your internet connection and Supabase settings.";
-        message.style.color="red";
-    }
+    setTimeout(function() {
+
+        showLogin();
+
+    }, 1500);
+
 }
 
-async function logout(){
+
+
+async function login() {
+
+    let username = document.getElementById("loginUsername").value.trim();
+
+    let password = document.getElementById("loginPassword").value;
+
+    let message = document.getElementById("message");
+
+
+    if (username === "" || password === "") {
+
+        message.innerHTML = "⚠️ Please enter username and password.";
+        message.style.color = "red";
+        return;
+
+    }
+
+
+    const email = username + "@lisstudyhub.com";
+
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+
+        email: email,
+
+        password: password
+
+    });
+
+
+    if (error) {
+
+        message.innerHTML = "❌ " + error.message;
+        message.style.color = "red";
+        return;
+
+    }
+
+
+    document.getElementById("auth").style.display = "none";
+
+    document.getElementById("website").style.display = "block";
+
+    showHome();
+
+}
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+async function logout() {
+
     await supabaseClient.auth.signOut();
-    document.getElementById("website").style.display="none";
-    document.getElementById("auth").style.display="block";
+
+    document.getElementById("website").style.display =
+        "none";
+
+    document.getElementById("auth").style.display =
+        "block";
+
     showLogin();
+
 }
 
-async function checkLogin(){
-    try{
-        const {data,error}=await supabaseClient.auth.getSession();
 
-        if(error){
-            console.error(error);
-            return;
-        }
+/* =====================================================
+   CHECK LOGIN
+   ===================================================== */
 
-        if(data.session){
-            document.getElementById("auth").style.display="none";
-            document.getElementById("website").style.display="block";
-            showHome();
-        }else{
-            document.getElementById("auth").style.display="block";
-            document.getElementById("website").style.display="none";
-        }
-    }catch(error){
-        console.error(error);
+async function checkLogin() {
+
+    const { data } =
+        await supabaseClient.auth.getSession();
+
+
+    if (data.session) {
+
+        showWebsite();
+
+    } else {
+
+        document.getElementById("auth").style.display =
+            "block";
+
+        document.getElementById("website").style.display =
+            "none";
+
     }
+
 }
 
-function hideAll(){
-    document.getElementById("home").style.display="none";
-    document.getElementById("lis211").style.display="none";
+
+/* =====================================================
+   NAVIGATION
+   ===================================================== */
+
+function hideAll() {
+
+    document.getElementById("home").style.display =
+        "none";
+
+    document.getElementById("lis211").style.display =
+        "none";
+
 }
 
-function showHome(){
+
+function showHome() {
+
     hideAll();
-    document.getElementById("home").style.display="block";
+
+    document.getElementById("home").style.display =
+        "block";
+
     window.scrollTo(0,0);
+
 }
 
-function showYear1(){
+
+function showYear1() {
+
     hideAll();
-    document.getElementById("home").style.display="block";
-    document.querySelectorAll(".year-title")[0].scrollIntoView();
+
+    document.getElementById("home").style.display =
+        "block";
+
+    document.querySelectorAll(".year-title")[0]
+        .scrollIntoView();
+
 }
 
-function showYear2(){
+
+function showYear2() {
+
     hideAll();
-    document.getElementById("home").style.display="block";
-    document.querySelectorAll(".year-title")[1].scrollIntoView();
+
+    document.getElementById("home").style.display =
+        "block";
+
+    document.querySelectorAll(".year-title")[1]
+        .scrollIntoView();
+
 }
 
-function showLIS211(){
+
+function showLIS211() {
+
     hideAll();
-    document.getElementById("lis211").style.display="block";
+
+    document.getElementById("lis211").style.display =
+        "block";
+
     window.scrollTo(0,0);
+
 }
 
-function courseMessage(course){
-    alert(course+" notes and questions will be added here from your lectures.");
+
+function courseMessage(course) {
+
+    alert(
+        course +
+        " notes and questions will be added here from your lectures."
+    );
+
 }
 
-function markQuiz(){
-    const answers={q1:"A",q2:"A",q3:"A",q4:"A",q5:"A"};
-    let score=0;
 
-    for(let question in answers){
-        const selected=document.querySelector(
-            'input[name="'+question+'"]:checked'
-        );
+/* =====================================================
+   QUIZ
+   ===================================================== */
 
-        if(selected && selected.value===answers[question]){
+function markQuiz() {
+
+    const answers = {
+
+        q1: "A",
+        q2: "A",
+        q3: "A",
+        q4: "A",
+        q5: "A"
+
+    };
+
+
+    let score = 0;
+
+
+    for (let question in answers) {
+
+        const selected =
+            document.querySelector(
+                'input[name="' +
+                question +
+                '"]:checked'
+            );
+
+
+        if (
+            selected &&
+            selected.value === answers[question]
+        ) {
+
             score++;
+
         }
+
     }
 
-    const percentage=(score/5)*100;
 
-    document.getElementById("quizResult").innerHTML=
-        "🎉 Your score: "+score+"/5 ("+percentage+"%)";
+    const percentage =
+        (score / 5) * 100;
+
+
+    document.getElementById("quizResult")
+        .innerHTML =
+        "🎉 Your score: " +
+        score +
+        "/5 (" +
+        percentage +
+        "%)";
+
 }
+
+
+/* =====================================================
+   START
+   ===================================================== */
 
 checkLogin();
+
 </script>
 
 </body>
+
 </html>
