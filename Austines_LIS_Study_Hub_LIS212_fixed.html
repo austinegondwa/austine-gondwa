@@ -1,0 +1,4917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Austine's LIS Study Hub</title>
+
+<!-- SUPABASE - LOAD ONCE ONLY -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+    line-height: 1.7;
+}
+
+/* =========================
+   AUTHENTICATION
+========================= */
+
+#auth {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #063970, #087f8c);
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 430px;
+    background: white;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+}
+
+.auth-container h1 {
+    text-align: center;
+    color: #063970;
+    margin-bottom: 5px;
+}
+
+.auth-container p {
+    text-align: center;
+    color: #666;
+}
+
+.auth-container input {
+    width: 100%;
+    padding: 13px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.auth-container button {
+    width: 100%;
+    padding: 13px;
+    margin-top: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #087f8c;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.auth-container button:hover {
+    background: #065f69;
+}
+
+.auth-link {
+    color: #087f8c;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#message {
+    margin-top: 15px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+/* =========================
+   WEBSITE
+========================= */
+
+#website {
+    display: none;
+}
+
+header {
+    background: linear-gradient(135deg, #063970, #087f8c);
+    color: white;
+    text-align: center;
+    padding: 35px 20px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 34px;
+}
+
+header p {
+    margin: 8px 0;
+    font-size: 17px;
+}
+
+nav {
+    background: #022b49;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+nav button {
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 11px 16px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+nav button:hover {
+    background: #087f8c;
+}
+
+.logout-btn {
+    background: #b42318 !important;
+}
+
+.container {
+    width: 92%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px 0;
+}
+
+.page-title {
+    text-align: center;
+    color: #063970;
+    margin-bottom: 30px;
+}
+
+/* =========================
+   COURSE CARDS
+========================= */
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.course-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.10);
+    border-top: 5px solid #087f8c;
+    transition: 0.25s;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 9px 25px rgba(0,0,0,0.15);
+}
+
+.course-card h3 {
+    color: #063970;
+    margin-top: 0;
+}
+
+.course-card button {
+    background: #087f8c;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.course-card button:hover {
+    background: #065f69;
+}
+
+/* =========================
+   NOTES
+========================= */
+
+.content-box {
+    background: white;
+    margin-bottom: 22px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.content-box h2 {
+    color: #063970;
+    border-bottom: 2px solid #087f8c;
+    padding-bottom: 7px;
+}
+
+.content-box h3 {
+    color: #087f8c;
+}
+
+.example-box,
+.process-box,
+.summary-box {
+    background: #f2f7ff;
+    border-left: 5px solid #087f8c;
+    padding: 18px;
+    margin: 18px 0;
+    border-radius: 10px;
+}
+
+.process-box {
+    background: #f5fff8;
+    border-left-color: #16803c;
+}
+
+.summary-box {
+    background: #fff9e8;
+    border-left-color: #d18b00;
+    text-align: center;
+}
+
+.question {
+    background: #f7f9fc;
+    padding: 18px;
+    margin: 15px 0;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.question label {
+    display: block;
+    margin: 7px 0;
+    cursor: pointer;
+}
+
+.question input {
+    margin-right: 8px;
+}
+
+.quiz-button {
+    background: #063970;
+    color: white;
+    border: none;
+    padding: 13px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.quiz-button:hover {
+    background: #087f8c;
+}
+
+#quizResult {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    background: #022b49;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    margin-top: 40px;
+}
+
+.back-button {
+    background: #063970;
+    color: white;
+    border: none;
+    padding: 11px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.back-button:hover {
+    background: #087f8c;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    header h1 {
+        font-size: 26px;
+    }
+
+    nav button {
+        font-size: 13px;
+        padding: 9px 10px;
+    }
+
+    .container {
+        width: 95%;
+    }
+
+    .content-box {
+        padding: 18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     LOGIN / REGISTER
+===================================================== -->
+
+<div id="auth">
+
+    <div class="auth-container">
+
+        <!-- LOGIN -->
+        <div id="loginForm">
+
+            <h1>📚 Austine's LIS Study Hub</h1>
+
+            <p>University of Malawi — Library and Information Science</p>
+
+            <h2 style="text-align:center;color:#087f8c;">
+                Student Login
+            </h2>
+
+            <input
+                type="email"
+                id="loginEmail"
+                placeholder="Email address"
+                autocomplete="email"
+            >
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Password"
+                autocomplete="current-password"
+            >
+
+            <button onclick="login()">Login</button>
+
+            <p>
+                Don't have an account?
+                <span class="auth-link" onclick="showRegister()">
+                    Create Account
+                </span>
+            </p>
+
+        </div>
+
+
+        <!-- REGISTER -->
+        <div id="registerForm" style="display:none;">
+
+            <h1>📚 Create Account</h1>
+
+            <p>Join Austine's LIS Study Hub</p>
+
+            <input
+                type="text"
+                id="registerUsername"
+                placeholder="Username"
+                autocomplete="username"
+            >
+
+            <input
+                type="email"
+                id="registerEmail"
+                placeholder="Email address"
+                autocomplete="email"
+            >
+
+            <input
+                type="password"
+                id="registerPassword"
+                placeholder="Password"
+                autocomplete="new-password"
+            >
+
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm password"
+                autocomplete="new-password"
+            >
+
+            <button onclick="register()">Create Account</button>
+
+            <p>
+                Already have an account?
+                <span class="auth-link" onclick="showLogin()">
+                    Login
+                </span>
+            </p>
+
+        </div>
+
+        <div id="message"></div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN WEBSITE
+===================================================== -->
+
+<div id="website">
+
+<header>
+
+    <h1>📚 Austine's LIS Study Hub</h1>
+
+    <p>
+        University of Malawi — Library and Information Science
+    </p>
+
+    <p>
+        Learn • Revise • Practice • Succeed
+    </p>
+
+</header>
+
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<nav>
+
+    <button onclick="showHome()">🏠 Home</button>
+
+    <button onclick="showYear1()">📘 Year 1</button>
+
+    <button onclick="showYear2()">📗 Year 2</button>
+
+    <button onclick="showLIS211()">📖 LIS211 Notes</button>
+    <button onclick="showLIS212()">📜 LIS212 Notes</button>
+    <button onclick="showLIS214()">💻 LIS214 Notes</button>
+
+    <button onclick="logout()" class="logout-btn">
+        🚪 Logout
+    </button>
+
+</nav>
+
+
+<div class="container">
+
+
+<!-- =====================================================
+     HOME
+===================================================== -->
+
+<div id="home">
+
+    <h1 class="page-title">
+        Welcome to Your LIS Study Hub
+    </h1>
+
+    <div class="content-box">
+
+        <h2>About This Website</h2>
+
+        <p>
+            Welcome to Austine's LIS Study Hub.
+            This website is designed to help Library and Information
+            Science students study their courses, read lecture notes,
+            revise important concepts and practise examination questions.
+        </p>
+
+        <p>
+            University of Malawi — Bachelor of Arts in Library and
+            Information Science.
+        </p>
+
+    </div>
+
+
+    <!-- YEAR 1 -->
+
+    <h2 class="page-title">📘 Year 1 Courses</h2>
+
+    <div class="course-grid">
+
+        <div class="course-card">
+
+            <h3>LIS121</h3>
+
+            <p>
+                Organization of Knowledge II
+            </p>
+
+            <button onclick="courseMessage('LIS121')">
+                Open Course
+            </button>
+
+        </div>
+
+
+        <div class="course-card">
+
+            <h3>LIS123</h3>
+
+            <p>
+                Writing and Oral Skills for Social Science
+            </p>
+
+            <button onclick="courseMessage('LIS123')">
+                Open Course
+            </button>
+
+        </div>
+
+
+        <div class="course-card">
+
+            <h3>LIS124</h3>
+
+            <p>
+                Marketing of Library and Information Products and Services
+            </p>
+
+            <button onclick="courseMessage('LIS124')">
+                Open Course
+            </button>
+
+        </div>
+
+
+        <div class="course-card">
+
+            <h3>LIS125</h3>
+
+            <p>
+                ICT II
+            </p>
+
+            <button onclick="courseMessage('LIS125')">
+                Open Course
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- YEAR 2 -->
+
+    <h2 class="page-title" style="margin-top:50px;">
+        📗 Year 2 Courses
+    </h2>
+
+    <div class="course-grid">
+
+        <div class="course-card">
+
+            <h3>LIS211</h3>
+
+            <p>
+                Information Literacy
+            </p>
+
+            <button onclick="showLIS211()">
+                Open Notes
+            </button>
+
+        </div>
+
+
+        <div class="course-card">
+    <h3>LIS212</h3>
+    <p>Records and Archives Management</p>
+    <button onclick="showLIS212()">Open Notes</button>
+</div>
+
+
+        <div class="course-card">
+
+            <h3>LIS213</h3>
+
+            <p>
+                Organization of Knowledge III
+            </p>
+
+            <button onclick="courseMessage('LIS213')">
+                Open Course
+            </button>
+
+        </div>
+
+
+        <div class="course-card">
+
+    <h3>LIS214</h3>
+
+    <p>
+        Digital Library Management
+    </p>
+
+    <button onclick="showLIS214()">
+        Open Notes
+    </button>
+
+</div>
+
+
+        <div class="course-card">
+
+            <h3>LIS215</h3>
+
+            <p>
+                End User Computing I
+            </p>
+
+            <button onclick="courseMessage('LIS215')">
+                Open Course
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     LIS211
+===================================================== -->
+
+<div id="lis211" style="display:none;">
+
+    <button class="back-button" onclick="showHome()">
+        ← Back to Home
+    </button>
+
+    <h1 class="page-title">
+        LIS211 — INFORMATION LITERACY
+    </h1>
+
+
+    <!-- 1 -->
+
+    <div class="content-box">
+
+        <h2>1. Meaning of Information Literacy</h2>
+
+        <p>
+            Information literacy is more than simply finding information
+            online or in books.
+        </p>
+
+        <p>
+            It involves the ability to identify an information need,
+            locate information, evaluate it, organize it, use it ethically,
+            and create new knowledge.
+        </p>
+
+        <div class="example-box">
+
+            <strong>Simple meaning:</strong>
+
+            <p>
+                Information literacy means knowing what information
+                you need, where to find it, how to judge whether it is
+                useful and trustworthy, and how to use it responsibly.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 2 -->
+
+    <div class="content-box">
+
+        <h2>2. Components of Information Literacy</h2>
+
+        <p>The main components are:</p>
+
+        <ol>
+
+            <li>Identifying information needs</li>
+
+            <li>Locating information</li>
+
+            <li>Evaluating information</li>
+
+            <li>Organizing information</li>
+
+            <li>Using information ethically</li>
+
+            <li>Creating new knowledge</li>
+
+        </ol>
+
+    </div>
+
+
+    <!-- 3 -->
+
+    <div class="content-box">
+
+        <h2>3. Identifying Information Needs</h2>
+
+        <p>
+            Identifying an information need means recognizing the gap
+            between what a person already knows and what the person
+            needs to know.
+        </p>
+
+        <p>
+            An information need may come from a question, problem,
+            decision or task.
+        </p>
+
+        <h3>When identifying an information need, consider:</h3>
+
+        <ul>
+
+            <li>The question or problem</li>
+
+            <li>The scope of the information needed</li>
+
+            <li>Key concepts</li>
+
+            <li>The depth of information required</li>
+
+            <li>The type of information required</li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- 4 -->
+
+    <div class="content-box">
+
+        <h2>4. Understanding Information Need</h2>
+
+        <p>
+            Before searching for information, a person should clearly
+            understand what information is required.
+        </p>
+
+        <p>
+            A clear information need helps the researcher avoid wasting
+            time and collecting irrelevant information.
+        </p>
+
+    </div>
+
+
+    <!-- 5 -->
+
+    <div class="content-box">
+
+        <h2>5. Locating Information</h2>
+
+        <p>
+            Locating information means finding information from
+            appropriate sources.
+        </p>
+
+        <p>
+            Sources may include books, journals, databases, websites,
+            newspapers, reports and other information resources.
+        </p>
+
+    </div>
+
+
+    <!-- 6 -->
+
+    <div class="content-box">
+
+        <h2>6. Academic Information Databases</h2>
+
+        <p>
+            Academic databases provide access to scholarly information.
+        </p>
+
+        <h3>Examples:</h3>
+
+        <ul>
+
+            <li>Scopus</li>
+
+            <li>Web of Science</li>
+
+            <li>JSTOR</li>
+
+            <li>EBSCO</li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- 7 -->
+
+    <div class="content-box">
+
+        <h2>7. Searching for Information</h2>
+
+        <p>
+            Searching for information involves developing a strategy
+            for finding relevant information.
+        </p>
+
+        <p>
+            A good search strategy can save time and improve the quality
+            of search results.
+        </p>
+
+    </div>
+
+
+    <!-- 8 -->
+
+    <div class="content-box">
+
+        <h2>8. Keywords</h2>
+
+        <p>
+            Keywords are important words or phrases that represent the
+            main ideas in an information need.
+        </p>
+
+        <p>
+            Good keywords help a researcher find relevant information.
+        </p>
+
+    </div>
+
+
+    <!-- 9 -->
+
+    <div class="content-box">
+
+        <h2>9. Controlled Vocabulary</h2>
+
+        <p>
+            Controlled vocabulary uses standardized terms to describe
+            information.
+        </p>
+
+        <p>
+            It helps researchers find information even when different
+            authors use different words for the same concept.
+        </p>
+
+    </div>
+
+
+    <!-- 10 -->
+
+    <div class="content-box">
+
+        <h2>10. Inclusion and Exclusion Criteria</h2>
+
+        <p>
+            Inclusion criteria identify the information that should be
+            included in a search.
+        </p>
+
+        <p>
+            Exclusion criteria identify information that should not be
+            included.
+        </p>
+
+        <p>
+            These criteria help make searching more focused.
+        </p>
+
+    </div>
+
+
+    <!-- 11 -->
+
+    <div class="content-box">
+
+        <h2>11. Refining a Search</h2>
+
+        <p>
+            Search results may sometimes be too broad or too narrow.
+            The search can therefore be refined.
+        </p>
+
+        <p>
+            Refinement can involve adding keywords, removing unnecessary
+            terms, changing search terms or applying filters.
+        </p>
+
+    </div>
+
+
+    <!-- 12 -->
+
+    <div class="content-box">
+
+        <h2>12. Evaluating Information</h2>
+
+        <p>
+            Evaluation means judging whether information is trustworthy,
+            relevant and useful for the purpose for which it is needed.
+        </p>
+
+        <h3>Important evaluation issues include:</h3>
+
+        <ul>
+
+            <li>Credibility</li>
+
+            <li>Relevance</li>
+
+            <li>Authority</li>
+
+            <li>Accuracy</li>
+
+            <li>Currency</li>
+
+            <li>Evidence</li>
+
+            <li>Purpose</li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- 13 -->
+
+    <div class="content-box">
+
+        <h2>13. CRAAP Test</h2>
+
+        <p>
+            The CRAAP Test is a method used to evaluate information.
+        </p>
+
+        <ul>
+
+            <li>
+                <strong>C — Currency:</strong>
+                How recent is the information?
+            </li>
+
+            <li>
+                <strong>R — Relevance:</strong>
+                Is the information relevant to the topic?
+            </li>
+
+            <li>
+                <strong>A — Authority:</strong>
+                Who created the information?
+            </li>
+
+            <li>
+                <strong>A — Accuracy:</strong>
+                Is the information correct and supported by evidence?
+            </li>
+
+            <li>
+                <strong>P — Purpose:</strong>
+                Why was the information created?
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- 14 -->
+
+    <div class="content-box">
+
+        <h2>14. Authority Is Constructed and Contextual</h2>
+
+        <p>
+            Authority is not always fixed. It depends on the context
+            in which information is being used.
+        </p>
+
+        <p>
+            ACRL (2016) explains that authority is constructed and
+            contextual.
+        </p>
+
+        <p>
+            This means that the authority of a source should be considered
+            according to the purpose and situation.
+        </p>
+
+    </div>
+
+
+    <!-- 15 -->
+
+    <div class="content-box">
+
+        <h2>15. Comparing Information Sources</h2>
+
+        <p>
+            Information should not always be accepted after looking at
+            only one source.
+        </p>
+
+        <p>
+            Reliable independent sources can be compared to determine
+            whether information agrees or differs.
+        </p>
+
+    </div>
+
+
+    <!-- 16 -->
+
+    <div class="content-box">
+
+        <h2>16. Information Quality</h2>
+
+        <p>
+            Information quality refers to how accurate, reliable,
+            relevant, current and useful information is.
+        </p>
+
+        <p>
+            High-quality information should be supported by evidence
+            and should come from appropriate sources.
+        </p>
+
+    </div>
+
+
+    <!-- 17 -->
+
+    <div class="content-box">
+
+        <h2>17. Misinformation</h2>
+
+        <p>
+            Misinformation is false or inaccurate information that is
+            shared without necessarily intending to cause harm.
+        </p>
+
+        <p>
+            A person may share misinformation because they believe
+            the information is true.
+        </p>
+
+    </div>
+
+
+    <!-- 18 -->
+
+    <div class="content-box">
+
+        <h2>18. Disinformation</h2>
+
+        <p>
+            Disinformation is false information that is deliberately
+            created or shared to deceive or mislead people.
+        </p>
+
+        <p>
+            The important difference is the intention to deceive.
+        </p>
+
+    </div>
+
+
+    <!-- 19 -->
+
+    <div class="content-box">
+
+        <h2>19. Deepfakes</h2>
+
+        <p>
+            Deepfakes are digitally manipulated or generated audio,
+            video or images that can make people appear to say or do
+            things that they did not actually say or do.
+        </p>
+
+        <p>
+            Information users therefore need to verify information
+            before accepting or sharing it.
+        </p>
+
+    </div>
+
+
+    <!-- 20 -->
+
+    <div class="content-box">
+
+        <h2>20. AI and Information</h2>
+
+        <p>
+            Artificial intelligence can be used to create information.
+        </p>
+
+        <p>
+            However, information created by AI should still be evaluated
+            because it may contain errors, incomplete information or
+            incorrect references.
+        </p>
+
+        <p>
+            Users should verify important information using reliable
+            sources.
+        </p>
+
+    </div>
+
+
+    <!-- 21 -->
+
+    <div class="content-box">
+
+        <h2>21. Information Overload</h2>
+
+        <p>
+            Information overload occurs when a person receives more
+            information than they can effectively process or use.
+        </p>
+
+        <p>
+            Information literacy helps people select relevant and
+            reliable information instead of simply collecting large
+            amounts of information.
+        </p>
+
+    </div>
+
+
+    <!-- 22 -->
+
+    <div class="content-box">
+
+        <h2>22. Organizing Information</h2>
+
+        <p>
+            Organizing information means systematically arranging,
+            classifying, documenting and managing collected information.
+        </p>
+
+        <p>
+            It helps a person synthesize evidence, see relationships,
+            compare perspectives and build coherent arguments.
+        </p>
+
+    </div>
+
+
+    <!-- 23 -->
+
+    <div class="content-box">
+
+        <h2>23. Information Ethics</h2>
+
+        <p>
+            Information ethics involves using information honestly
+            and responsibly.
+        </p>
+
+        <p>
+            It includes honesty, respect for intellectual ownership,
+            academic integrity, trust, transparency and accountability.
+        </p>
+
+    </div>
+
+
+    <!-- 24 -->
+
+    <div class="content-box">
+
+        <h2>24. Intellectual Ownership</h2>
+
+        <p>
+            Intellectual ownership means recognizing that people can
+            have rights over ideas, writings, research, inventions and
+            other intellectual works.
+        </p>
+
+        <p>
+            Users should respect the intellectual work of other people.
+        </p>
+
+    </div>
+
+
+    <!-- 25 -->
+
+    <div class="content-box">
+
+        <h2>25. Academic Integrity</h2>
+
+        <p>
+            Academic integrity means being honest in academic work.
+        </p>
+
+        <p>
+            Students should not present another person's work or ideas
+            as their own.
+        </p>
+
+        <p>
+            Academic integrity supports trust in education and research.
+        </p>
+
+    </div>
+
+
+    <!-- 26 -->
+
+    <div class="content-box">
+
+        <h2>26. Plagiarism</h2>
+
+        <p>
+            Plagiarism is presenting another person's words, ideas or
+            work as one's own without appropriate acknowledgment.
+        </p>
+
+        <p>
+            Proper citation and referencing help prevent plagiarism.
+        </p>
+
+    </div>
+
+
+    <!-- 27 -->
+
+    <div class="content-box">
+
+        <h2>27. Citation and Referencing</h2>
+
+        <p>
+            Citation gives credit to the source of information used
+            in academic work.
+        </p>
+
+        <p>
+            Referencing provides information that allows readers to
+            identify and locate the sources used.
+        </p>
+
+    </div>
+
+
+    <!-- 28 -->
+
+    <div class="content-box">
+
+        <h2>28. Trust, Transparency and Accountability</h2>
+
+        <p>
+            Responsible information use requires trust, transparency
+            and accountability.
+        </p>
+
+        <ul>
+
+            <li>
+                <strong>Trust:</strong>
+                Information users should be able to rely on information
+                and its sources.
+            </li>
+
+            <li>
+                <strong>Transparency:</strong>
+                Information processes and sources should be clear.
+            </li>
+
+            <li>
+                <strong>Accountability:</strong>
+                Information creators and users should take responsibility
+                for how information is produced and used.
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- 29 -->
+
+    <div class="content-box">
+
+        <h2>29. Critical Thinking</h2>
+
+        <p>
+            Critical thinking involves carefully examining information,
+            evidence and arguments before accepting a conclusion.
+        </p>
+
+        <p>
+            It requires questioning assumptions, comparing evidence
+            and considering different perspectives.
+        </p>
+
+    </div>
+
+
+    <!-- 30 -->
+
+    <div class="content-box">
+
+        <h2>30. Information Literacy and Critical Thinking</h2>
+
+        <p>
+            Information literacy and critical thinking work together.
+        </p>
+
+        <p>
+            A person needs critical thinking to evaluate sources,
+            identify weaknesses in information and decide what
+            information can be trusted.
+        </p>
+
+    </div>
+
+
+    <!-- 31 -->
+
+    <div class="content-box">
+
+        <h2>31. Creating New Knowledge</h2>
+
+        <p>
+            Creating new knowledge involves using information from
+            different sources to develop new understanding.
+        </p>
+
+        <p>
+            A learner does not simply copy what authors have written.
+            The learner studies existing information, identifies gaps,
+            applies knowledge to those gaps and develops new explanations,
+            models or conceptual ideas.
+        </p>
+
+    </div>
+
+
+    <!-- 32 -->
+
+    <div class="content-box">
+
+        <h2>32. Synthesis</h2>
+
+        <p>
+            Synthesis means bringing information from different sources
+            together to develop a deeper understanding.
+        </p>
+
+        <p>
+            It is more than simply summarizing each source separately.
+        </p>
+
+    </div>
+
+
+    <!-- 33 -->
+
+    <div class="content-box">
+
+        <h2>33. Identifying Gaps</h2>
+
+        <p>
+            A research or information gap is something that is not
+            sufficiently explained, studied or understood in existing
+            information.
+        </p>
+
+        <p>
+            Identifying gaps can provide an opportunity for creating
+            new knowledge.
+        </p>
+
+    </div>
+
+
+    <!-- 34 -->
+
+    <div class="content-box">
+
+        <h2>34. Creating New Explanations and Ideas</h2>
+
+        <p>
+            After identifying a gap, information can be used to develop
+            new explanations, ideas, models or conceptual artifacts.
+        </p>
+
+        <p>
+            This is an important part of building knowledge.
+        </p>
+
+    </div>
+
+
+    <!-- 35 -->
+
+    <div class="content-box">
+
+        <h2>35. Information Literacy Is Not Linear</h2>
+
+        <p>
+            Information literacy is not always a straight process.
+        </p>
+
+        <p>
+            A person may move back and forth between identifying an
+            information need, searching, evaluating, organizing and
+            creating knowledge.
+        </p>
+
+    </div>
+
+
+    <!-- 36 -->
+
+    <div class="content-box">
+
+        <h2>36. Interdisciplinary Integration</h2>
+
+        <p>
+            Information literacy can involve information from different
+            academic disciplines.
+        </p>
+
+        <p>
+            Critical thinking helps users connect information from
+            different areas to understand complex problems.
+        </p>
+
+    </div>
+
+
+    <!-- 37 -->
+
+    <div class="content-box">
+
+        <h2>37. SCARA Framework</h2>
+
+        <p>
+            The SCARA framework describes information literacy as an
+            interactive, iterative and constructive process.
+        </p>
+
+        <div class="process-box">
+
+            <p>
+                Information literacy involves continuous interaction
+                between the information user, information sources,
+                searching, evaluation, interpretation and knowledge creation.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 38 -->
+
+    <div class="content-box">
+
+        <h2>38. Information Literacy as an Interactive Process</h2>
+
+        <p>
+            Information literacy involves interaction between people,
+            information, information systems and the environment.
+        </p>
+
+        <p>
+            The process can change as new information is discovered.
+        </p>
+
+    </div>
+
+
+    <!-- 39 -->
+
+    <div class="content-box">
+
+        <h2>39. Information Literacy in Everyday Life</h2>
+
+        <p>
+            Information literacy is useful in everyday life.
+        </p>
+
+        <p>
+            People need information when making decisions about
+            education, health, finances, employment, politics and
+            many other areas.
+        </p>
+
+    </div>
+
+
+    <!-- 40 -->
+
+    <div class="content-box">
+
+        <h2>40. Information-Rich Classes and Communities</h2>
+
+        <p>
+            Information-rich classes and communities can help people
+            become informed about issues happening around them.
+        </p>
+
+        <p>
+            Access to reliable information can support learning,
+            participation and responsible decision making.
+        </p>
+
+    </div>
+
+
+    <!-- 41 -->
+
+    <div class="content-box">
+
+        <h2>41. Informed Citizenship</h2>
+
+        <p>
+            Information literacy can contribute to informed citizenship.
+        </p>
+
+        <p>
+            Citizens need reliable information to understand issues,
+            participate in society and make informed decisions.
+        </p>
+
+    </div>
+
+
+    <!-- 42 -->
+
+    <div class="content-box">
+
+        <h2>42. Responsible Voting</h2>
+
+        <p>
+            Reliable information can help citizens understand issues
+            and candidates before making voting decisions.
+        </p>
+
+        <p>
+            Information literacy therefore supports responsible
+            participation in democratic processes.
+        </p>
+
+    </div>
+
+
+    <!-- 43 -->
+
+    <div class="content-box">
+
+        <h2>43. Transparency and Accountability</h2>
+
+        <p>
+            Access to reliable information can support transparency
+            and accountability.
+        </p>
+
+        <p>
+            People can use information to understand what institutions
+            and organizations are doing and to ask appropriate questions.
+        </p>
+
+    </div>
+
+
+    <!-- 44 -->
+
+    <div class="content-box">
+
+        <h2>44. Identity Theft and Fraud</h2>
+
+        <p>
+            Information literacy is also important for protecting
+            personal information.
+        </p>
+
+        <p>
+            People should be careful when sharing passwords, financial
+            information, identification information and other personal
+            details.
+        </p>
+
+        <p>
+            Suspicious information should be verified before action
+            is taken.
+        </p>
+
+    </div>
+
+
+    <!-- 45 -->
+
+    <div class="content-box">
+
+        <h2>45. Responsible Use of Information</h2>
+
+        <p>
+            Information should be used responsibly and ethically.
+        </p>
+
+        <p>
+            Users should respect privacy, intellectual ownership,
+            copyright, academic integrity and the rights of others.
+        </p>
+
+    </div>
+
+
+    <!-- 46 -->
+
+    <div class="content-box">
+
+        <h2>46. Verification</h2>
+
+        <p>
+            Verification means checking information against reliable
+            evidence or independent sources before accepting or sharing it.
+        </p>
+
+        <p>
+            Verification is especially important when information is
+            surprising, controversial or potentially harmful.
+        </p>
+
+    </div>
+
+
+    <!-- 47 -->
+
+    <div class="content-box">
+
+        <h2>47. Information Literacy and Problem Solving</h2>
+
+        <p>
+            Information literacy helps people solve problems by
+            identifying the information required, locating relevant
+            sources, evaluating evidence and applying the information.
+        </p>
+
+    </div>
+
+
+    <!-- 48 -->
+
+    <div class="content-box">
+
+        <h2>48. Information Literacy and Decision Making</h2>
+
+        <p>
+            Good decisions often depend on good information.
+        </p>
+
+        <p>
+            Information literacy helps people collect relevant
+            information, evaluate alternatives and make informed decisions.
+        </p>
+
+    </div>
+
+
+    <!-- 49 -->
+
+    <div class="content-box">
+
+        <h2>49. Overall Information Literacy Process</h2>
+
+        <div class="process-box">
+
+            <ol>
+
+                <li>Identify the information need.</li>
+
+                <li>Develop a search strategy.</li>
+
+                <li>Locate information.</li>
+
+                <li>Evaluate information.</li>
+
+                <li>Compare reliable sources.</li>
+
+                <li>Organize information.</li>
+
+                <li>Use information ethically.</li>
+
+                <li>Synthesize information.</li>
+
+                <li>Identify gaps.</li>
+
+                <li>Create new knowledge.</li>
+
+                <li>Review and refine the process.</li>
+
+            </ol>
+
+        </div>
+
+    </div>
+
+
+    <!-- 50 -->
+
+    <div class="content-box">
+
+        <h2>50. Final Summary</h2>
+
+        <div class="summary-box">
+
+            <h3>Information Literacy</h3>
+
+            <p>
+                Information literacy is the ability to identify,
+                locate, evaluate, organize and ethically use information
+                and to create new knowledge.
+            </p>
+
+            <p>
+                It involves critical thinking, effective searching,
+                evaluation of information, ethical use, synthesis,
+                identification of gaps and knowledge creation.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         QUIZ
+    ================================================== -->
+
+    <div class="content-box">
+
+        <h2>
+            📝 LIS211 Multiple Choice Quiz
+        </h2>
+
+        <p>
+            Choose the best answer for each question.
+        </p>
+
+
+        <!-- Q1 -->
+
+        <div class="question">
+
+            <p>
+                <strong>1. What is information literacy?</strong>
+            </p>
+
+            <label>
+                <input type="radio" name="q1" value="A">
+                A. Ability to use the internet only
+            </label>
+
+            <label>
+                <input type="radio" name="q1" value="B">
+                B. Ability to identify, locate, evaluate and use information
+            </label>
+
+            <label>
+                <input type="radio" name="q1" value="C">
+                C. Ability to memorize books
+            </label>
+
+            <label>
+                <input type="radio" name="q1" value="D">
+                D. Ability to use social media
+            </label>
+
+        </div>
+
+
+        <!-- Q2 -->
+
+        <div class="question">
+
+            <p>
+                <strong>
+                    2. Which of the following is part of the CRAAP Test?
+                </strong>
+            </p>
+
+            <label>
+                <input type="radio" name="q2" value="A">
+                A. Currency
+            </label>
+
+            <label>
+                <input type="radio" name="q2" value="B">
+                B. Computer
+            </label>
+
+            <label>
+                <input type="radio" name="q2" value="C">
+                C. Classification
+            </label>
+
+            <label>
+                <input type="radio" name="q2" value="D">
+                D. Communication
+            </label>
+
+        </div>
+
+
+        <!-- Q3 -->
+
+        <div class="question">
+
+            <p>
+                <strong>
+                    3. What is disinformation?
+                </strong>
+            </p>
+
+            <label>
+                <input type="radio" name="q3" value="A">
+                A. Accurate information
+            </label>
+
+            <label>
+                <input type="radio" name="q3" value="B">
+                B. Information shared accidentally
+            </label>
+
+            <label>
+                <input type="radio" name="q3" value="C">
+                C. False information deliberately created or shared to deceive
+            </label>
+
+            <label>
+                <input type="radio" name="q3" value="D">
+                D. Information from a library
+            </label>
+
+        </div>
+
+
+        <!-- Q4 -->
+
+        <div class="question">
+
+            <p>
+                <strong>
+                    4. What is plagiarism?
+                </strong>
+            </p>
+
+            <label>
+                <input type="radio" name="q4" value="A">
+                A. Creating new knowledge
+            </label>
+
+            <label>
+                <input type="radio" name="q4" value="B">
+                B. Presenting another person's work as your own
+            </label>
+
+            <label>
+                <input type="radio" name="q4" value="C">
+                C. Evaluating information
+            </label>
+
+            <label>
+                <input type="radio" name="q4" value="D">
+                D. Searching a database
+            </label>
+
+        </div>
+
+
+        <!-- Q5 -->
+
+        <div class="question">
+
+            <p>
+                <strong>
+                    5. What is an important part of creating new knowledge?
+                </strong>
+            </p>
+
+            <label>
+                <input type="radio" name="q5" value="A">
+                A. Copying one source
+            </label>
+
+            <label>
+                <input type="radio" name="q5" value="B">
+                B. Ignoring evidence
+            </label>
+
+            <label>
+                <input type="radio" name="q5" value="C">
+                C. Synthesizing information and identifying gaps
+            </label>
+
+            <label>
+                <input type="radio" name="q5" value="D">
+                C. Sharing information without checking it
+            </label>
+
+        </div>
+
+
+        <button class="quiz-button" onclick="markQuiz()">
+            Check My Answers
+        </button>
+
+        <div id="quizResult"></div>
+
+    </div>
+
+</div>
+
+
+</div>
+<!-- =====================================================
+     LIS214 — DIGITAL LIBRARY MANAGEMENT
+===================================================== -->
+
+<div id="lis214" style="display:none;">
+
+    <button class="back-button" onclick="showHome()">
+        ← Back to Home
+    </button>
+
+    <h1 class="page-title">
+        LIS214 — DIGITAL LIBRARY MANAGEMENT
+    </h1>
+
+
+    <!-- 1 -->
+
+    <div class="content-box">
+
+        <h2>1. Introduction to Digital Libraries</h2>
+
+        <p>
+            A digital library is a library in which information resources
+            are available in digital or electronic form and can be accessed
+            using computers and digital technologies.
+        </p>
+
+        <p>
+            Digital libraries are a set of electronic resources and
+            associated technical capabilities for creating, searching,
+            and using information.
+        </p>
+
+        <p>
+            A digital library is not simply a collection of files on a
+            computer. It is organized and constructed for a community
+            of users.
+        </p>
+
+        <h3>The information needs of users help determine:</h3>
+
+        <ul>
+
+            <li>What resources are collected</li>
+
+            <li>How resources are organized</li>
+
+            <li>What searching facilities are provided</li>
+
+            <li>How users access information</li>
+
+            <li>What technical capabilities are required</li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- 2 -->
+
+    <div class="content-box">
+
+        <h2>2. Why Digital Libraries Developed</h2>
+
+        <p>
+            The development of digital libraries was connected to changes
+            in information technology and the problems experienced with
+            traditional information resources.
+        </p>
+
+        <div class="example-box">
+
+            <h3>Class Example: UNIMA and Foreign Journals</h3>
+
+            <p>
+                An example discussed in class was UNIMA's access to
+                foreign journals.
+            </p>
+
+            <p>
+                Foreign journals could take a long time to reach Malawi
+                because they were physically sent from the United Kingdom
+                (UK).
+            </p>
+
+            <p>This created problems such as:</p>
+
+            <ul>
+
+                <li>Delays in receiving journals</li>
+
+                <li>Users waiting for current information</li>
+
+                <li>Difficulty accessing recent research</li>
+
+                <li>Dependence on physical transportation</li>
+
+            </ul>
+
+            <p>
+                Digital technology helped change this situation because
+                journals could increasingly be made available electronically.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 3 -->
+
+    <div class="content-box">
+
+        <h2>3. Vannevar Bush</h2>
+
+        <p>
+            One important person discussed in the development of digital
+            information systems was Vannevar Bush.
+        </p>
+
+        <p>
+            In 1945, Vannevar Bush described an idea called the
+            <strong>Memex</strong>.
+        </p>
+
+        <h3>Memex</h3>
+
+        <p>
+            The Memex was a proposed device for storing and accessing
+            large amounts of information.
+        </p>
+
+        <p>
+            It was designed as a device that could help a person store:
+        </p>
+
+        <ul>
+
+            <li>Books</li>
+
+            <li>Records</li>
+
+            <li>Communications</li>
+
+            <li>Other information</li>
+
+        </ul>
+
+        <p>
+            The importance of the Memex is that it provided an early
+            vision of how information could be stored and accessed
+            electronically.
+        </p>
+
+        <div class="summary-box">
+
+            <strong>Important:</strong>
+
+            <p>
+                The Memex was not a digital library in the modern sense.
+                It was an early idea that influenced later developments
+                in information storage, retrieval and linking.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 4 -->
+
+    <div class="content-box">
+
+        <h2>4. Microfiche</h2>
+
+        <p>
+            Another technology discussed in class was
+            <strong>microfiche</strong>.
+        </p>
+
+        <p>
+            Microfiche stores reduced photographic images of documents
+            on a sheet of film.
+        </p>
+
+        <p>
+            A microfiche reader is used to enlarge the images so that
+            users can read the information.
+        </p>
+
+        <h3>Importance of Microfiche</h3>
+
+        <p>
+            Microfiche helped libraries store large amounts of information
+            in a relatively small physical space.
+        </p>
+
+        <p>
+            Instead of keeping many large physical documents, information
+            could be reduced and stored on microfiche.
+        </p>
+
+        <p>
+            However, users still needed special equipment to read it.
+        </p>
+
+        <div class="example-box">
+
+            <strong>Class idea:</strong>
+
+            <p>
+                Microfiche shows an earlier stage in the development of
+                information storage before modern digital libraries.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 5 -->
+
+    <div class="content-box">
+
+        <h2>5. Development Towards Digital Libraries</h2>
+
+        <p>
+            The development of digital libraries did not happen suddenly.
+            It developed through several technological developments.
+        </p>
+
+        <p>The lecture discussed developments involving:</p>
+
+        <ul>
+
+            <li>Vannevar Bush and the Memex</li>
+
+            <li>Microfiche</li>
+
+            <li>Computer technology</li>
+
+            <li>Electronic publishing</li>
+
+            <li>Hypertext</li>
+
+            <li>The Internet</li>
+
+            <li>The World Wide Web</li>
+
+        </ul>
+
+        <p>
+            These developments gradually changed how information could
+            be stored, connected, searched and accessed.
+        </p>
+
+    </div>
+
+
+    <!-- 6 -->
+
+    <div class="content-box">
+
+        <h2>6. Hypertext</h2>
+
+        <p>
+            Hypertext refers to information that contains links connecting
+            one piece of information to another.
+        </p>
+
+        <p>
+            Instead of reading information only in a fixed sequence,
+            a user can follow links to related information.
+        </p>
+
+        <p>
+            Hypertext became important in the development of digital
+            information systems because it made it possible to connect
+            documents and information resources electronically.
+        </p>
+
+    </div>
+
+
+    <!-- 7 -->
+
+    <div class="content-box">
+
+        <h2>7. Tim Berners-Lee</h2>
+
+        <p>
+            Another important person discussed in class was
+            <strong>Tim Berners-Lee</strong>.
+        </p>
+
+        <p>
+            He developed the <strong>World Wide Web (WWW)</strong>.
+        </p>
+
+        <h3>Importance to Digital Libraries</h3>
+
+        <p>
+            The World Wide Web made it possible for documents and
+            information resources to be connected and accessed through
+            the Internet.
+        </p>
+
+        <p>
+            The Web made digital information much easier to:
+        </p>
+
+        <ul>
+
+            <li>Publish</li>
+
+            <li>Connect</li>
+
+            <li>Search</li>
+
+            <li>Access</li>
+
+            <li>Share</li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- 8 -->
+
+    <div class="content-box">
+
+        <h2>8. World Wide Web</h2>
+
+        <p>
+            The World Wide Web is a system of interconnected information
+            resources that can be accessed through the Internet.
+        </p>
+
+        <p>
+            For libraries, the Web provided a major opportunity to make
+            information resources available to users beyond the physical
+            library.
+        </p>
+
+        <p>
+            A user no longer necessarily had to be physically inside a
+            library to access information.
+        </p>
+
+    </div>
+
+
+    <!-- 9 -->
+
+    <div class="content-box">
+
+        <h2>9. Electronic Publishing</h2>
+
+        <p>
+            The lecture also discussed the development of
+            <strong>electronic publishing</strong>.
+        </p>
+
+        <p>
+            Publishers began making scholarly information available
+            electronically.
+        </p>
+
+        <h3>Examples discussed in class:</h3>
+
+        <ul>
+
+            <li>SAGE</li>
+
+            <li>Elsevier</li>
+
+        </ul>
+
+        <p>
+            These publishers provide electronic scholarly journals and
+            other academic information resources.
+        </p>
+
+        <p>
+            Electronic publishing contributed to the growth of digital
+            libraries because libraries could provide users with access
+            to electronic scholarly materials.
+        </p>
+
+    </div>
+
+
+    <!-- 10 -->
+
+    <div class="content-box">
+
+        <h2>10. SAGE</h2>
+
+        <p>
+            SAGE is an academic publisher that provides scholarly
+            information electronically.
+        </p>
+
+        <p>
+            For digital libraries, electronic journals from publishers
+            such as SAGE can become part of the resources made available
+            to library users.
+        </p>
+
+        <p>
+            Instead of relying only on printed journals, users can access
+            electronic versions.
+        </p>
+
+    </div>
+
+
+    <!-- 11 -->
+
+    <div class="content-box">
+
+        <h2>11. Elsevier</h2>
+
+        <p>
+            Elsevier is another major academic publisher.
+        </p>
+
+        <p>
+            It provides scholarly journals and other research resources
+            electronically.
+        </p>
+
+        <p>
+            Digital libraries can provide access to such electronic
+            resources to their user communities, depending on the
+            library's subscriptions and access arrangements.
+        </p>
+
+    </div>
+
+
+    <!-- 12 -->
+
+    <div class="content-box">
+
+        <h2>12. Digital Library as Resources + Capabilities</h2>
+
+        <p>
+            The lecturer's definition is important for examinations.
+        </p>
+
+        <h3>Electronic Resources</h3>
+
+        <p>
+            These are the digital information materials available
+            to users.
+        </p>
+
+        <p>Examples include:</p>
+
+        <ul>
+
+            <li>Electronic journals</li>
+
+            <li>Electronic books</li>
+
+            <li>Digital documents</li>
+
+            <li>Images</li>
+
+            <li>Audio</li>
+
+            <li>Video</li>
+
+            <li>Other digital materials</li>
+
+        </ul>
+
+        <h3>Technical Capabilities</h3>
+
+        <p>
+            These are the technologies that allow users to work with
+            the resources.
+        </p>
+
+        <p>They include capabilities for:</p>
+
+        <ul>
+
+            <li>Creating information</li>
+
+            <li>Searching information</li>
+
+            <li>Accessing information</li>
+
+            <li>Using information</li>
+
+            <li>Managing digital resources</li>
+
+        </ul>
+
+        <div class="summary-box">
+
+            <h3>Digital Library = Electronic Resources + Technical Capabilities</h3>
+
+        </div>
+
+    </div>
+
+
+    <!-- 13 -->
+
+    <div class="content-box">
+
+        <h2>13. Digital Library and User Community</h2>
+
+        <p>
+            A digital library is developed for a particular
+            <strong>community of users</strong>.
+        </p>
+
+        <p>
+            The information needs of the community influence the
+            development of the digital library.
+        </p>
+
+        <h3>Example: University Digital Library</h3>
+
+        <p>
+            A university digital library may be designed for:
+        </p>
+
+        <ul>
+
+            <li>Students</li>
+
+            <li>Lecturers</li>
+
+            <li>Researchers</li>
+
+            <li>Librarians</li>
+
+            <li>Other university staff</li>
+
+        </ul>
+
+        <p>
+            The resources provided should therefore reflect the
+            information needs of these users.
+        </p>
+
+    </div>
+
+
+    <!-- 14 -->
+
+    <div class="content-box">
+
+        <h2>14. Digital Multimedia</h2>
+
+        <p>
+            Digital libraries can contain different forms of information.
+        </p>
+
+        <h3>Text</h3>
+
+        <ul>
+
+            <li>Electronic books</li>
+
+            <li>Electronic journals</li>
+
+            <li>Reports</li>
+
+            <li>Research papers</li>
+
+        </ul>
+
+        <h3>Still Images</h3>
+
+        <ul>
+
+            <li>Photographs</li>
+
+            <li>Maps</li>
+
+            <li>Diagrams</li>
+
+            <li>Scanned documents</li>
+
+        </ul>
+
+        <h3>Moving Images</h3>
+
+        <ul>
+
+            <li>Videos</li>
+
+            <li>Recorded lectures</li>
+
+            <li>Documentaries</li>
+
+        </ul>
+
+        <h3>Audio</h3>
+
+        <ul>
+
+            <li>Recorded interviews</li>
+
+            <li>Lectures</li>
+
+            <li>Music</li>
+
+            <li>Sound recordings</li>
+
+        </ul>
+
+        <p>
+            Therefore, a digital library can contain much more than text.
+        </p>
+
+    </div>
+
+
+    <!-- 15 -->
+
+    <div class="content-box">
+
+        <h2>15. Distributed Access</h2>
+
+        <p>
+            Digital library resources can be distributed across different
+            locations.
+        </p>
+
+        <p>
+            Users can access information through networks such as:
+        </p>
+
+        <ul>
+
+            <li>The Internet</li>
+
+            <li>Institutional intranets</li>
+
+        </ul>
+
+        <p>
+            This means that the resources do not necessarily have to be
+            physically stored in the same place as the user.
+        </p>
+
+        <div class="example-box">
+
+            <strong>Example:</strong>
+
+            <p>
+                A UNIMA student may access an electronic journal hosted
+                on a publisher's system in another country.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 16 -->
+
+    <div class="content-box">
+
+        <h2>16. Remote Access</h2>
+
+        <p>
+            One major advantage of digital libraries is
+            <strong>remote access</strong>.
+        </p>
+
+        <p>
+            A user does not always have to be physically present in
+            the library.
+        </p>
+
+        <p>For example, a student can access digital resources:</p>
+
+        <ul>
+
+            <li>From home</li>
+
+            <li>From a hostel</li>
+
+            <li>From a computer laboratory</li>
+
+            <li>From another location with Internet access</li>
+
+        </ul>
+
+        <p>
+            This is different from a traditional printed resource that
+            may require the user to visit the library.
+        </p>
+
+    </div>
+
+
+    <!-- 17 -->
+
+    <div class="content-box">
+
+        <h2>17. 24/7 Access</h2>
+
+        <p>
+            Digital libraries can provide access to information
+            <strong>24 hours a day, 7 days a week</strong>, depending
+            on the availability of the system and Internet connection.
+        </p>
+
+        <p>
+            A traditional library may have opening and closing hours.
+        </p>
+
+        <p>
+            Digital resources can potentially be accessed outside those
+            physical opening hours.
+        </p>
+
+        <div class="example-box">
+
+            <strong>Class example:</strong>
+
+            <p>
+                A student studying at 11:00 p.m. can access an electronic
+                journal without waiting for the physical library to open.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 18 -->
+
+    <div class="content-box">
+
+        <h2>18. Searching Digital Information</h2>
+
+        <p>
+            Searching is an important capability of a digital library.
+        </p>
+
+        <p>Users can search for information using:</p>
+
+        <ul>
+
+            <li>Keywords</li>
+
+            <li>Titles</li>
+
+            <li>Authors</li>
+
+            <li>Subjects</li>
+
+            <li>Dates</li>
+
+            <li>Other search fields</li>
+
+        </ul>
+
+        <p>
+            This can make it easier to locate specific information
+            from a large collection.
+        </p>
+
+    </div>
+
+
+    <!-- 19 -->
+
+    <div class="content-box">
+
+        <h2>19. Browsing</h2>
+
+        <p>
+            Digital libraries can also allow users to
+            <strong>browse</strong> information.
+        </p>
+
+        <p>
+            Browsing means looking through available resources or
+            categories to discover information.
+        </p>
+
+        <div class="example-box">
+
+            <strong>Example:</strong>
+
+            <p>
+                A student may browse:
+            </p>
+
+            <p>
+                Library Science → Digital Libraries →
+                Digital Library Management
+            </p>
+
+            <p>
+                without already knowing the exact title of a document.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 20 -->
+
+    <div class="content-box">
+
+        <h2>20. Downloading and Saving</h2>
+
+        <p>
+            Where permitted by the library or publisher's access rights,
+            users may be able to:
+        </p>
+
+        <ul>
+
+            <li>Download documents</li>
+
+            <li>Save documents</li>
+
+            <li>Print documents</li>
+
+            <li>Copy information for appropriate use</li>
+
+        </ul>
+
+        <p>
+            However, users must respect copyright and the conditions
+            of access.
+        </p>
+
+    </div>
+
+
+    <!-- 21 -->
+
+    <div class="content-box">
+
+        <h2>21. Fast Access to Information</h2>
+
+        <p>
+            Digital libraries can provide information much faster than
+            systems that depend entirely on physical delivery.
+        </p>
+
+        <div class="example-box">
+
+            <h3>Class Example: Foreign Journals</h3>
+
+            <p>
+                With printed journals:
+            </p>
+
+            <p>
+                <strong>
+                    UK → Physical transportation → Malawi → UNIMA → User
+                </strong>
+            </p>
+
+            <p>
+                With electronic access:
+            </p>
+
+            <p>
+                <strong>
+                    Publisher's digital system → Internet → User
+                </strong>
+            </p>
+
+            <p>
+                This can reduce the physical delay associated with
+                receiving information.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 22 -->
+
+    <div class="content-box">
+
+        <h2>22. Current Information</h2>
+
+        <p>
+            Digital libraries can help users access more current
+            information, particularly when publishers regularly update
+            their electronic collections.
+        </p>
+
+        <p>
+            This is important for researchers and students because
+            scholarly work often depends on recent research.
+        </p>
+
+        <p>
+            However, <strong>digital does not automatically mean current.</strong>
+        </p>
+
+        <p>
+            A digital document can still be old.
+        </p>
+
+        <p>
+            Therefore, users should check the publication date and
+            other evaluation criteria.
+        </p>
+
+    </div>
+
+
+    <!-- 23 -->
+
+    <div class="content-box">
+
+        <h2>23. Traditional Library vs Digital Library</h2>
+
+        <table style="
+            width:100%;
+            border-collapse:collapse;
+            margin-top:15px;
+        ">
+
+            <tr style="background:#063970;color:white;">
+
+                <th style="padding:12px;border:1px solid #ccc;">
+                    Traditional Library
+                </th>
+
+                <th style="padding:12px;border:1px solid #ccc;">
+                    Digital Library
+                </th>
+
+            </tr>
+
+            <tr>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Mainly physical resources
+                </td>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Mainly digital/electronic resources
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    User may need to visit the library
+                </td>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Can provide remote access
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Physical storage required
+                </td>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Digital storage used
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Physical journals may take time to arrive
+                </td>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Electronic journals can be accessed online
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Opening hours may limit access
+                </td>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Can provide 24/7 access
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Searching may involve physical browsing
+                </td>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Electronic searching is available
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Mainly books, journals and physical materials
+                </td>
+
+                <td style="padding:12px;border:1px solid #ccc;">
+                    Text, images, audio, video and other digital materials
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- 24 -->
+
+    <div class="content-box">
+
+        <h2>24. Development of Digital Libraries</h2>
+
+        <p>
+            The development of digital libraries can be understood
+            as a progression of information technologies.
+        </p>
+
+        <div class="process-box">
+
+            <p>
+                <strong>Physical Information</strong>
+            </p>
+
+            <p>↓</p>
+
+            <p>
+                <strong>
+                    Microform Technologies such as Microfiche
+                </strong>
+            </p>
+
+            <p>↓</p>
+
+            <p>
+                <strong>
+                    Computerized Information Systems
+                </strong>
+            </p>
+
+            <p>↓</p>
+
+            <p>
+                <strong>
+                    Electronic Publishing
+                </strong>
+            </p>
+
+            <p>↓</p>
+
+            <p>
+                <strong>
+                    Internet and World Wide Web
+                </strong>
+            </p>
+
+            <p>↓</p>
+
+            <p>
+                <strong>
+                    Digital Libraries
+                </strong>
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 25 -->
+
+    <div class="content-box">
+
+        <h2>25. Important Class Examples</h2>
+
+        <div class="example-box">
+
+            <h3>Example 1: UNIMA Foreign Journals</h3>
+
+            <p>
+                Foreign journals from the UK could take time to reach
+                UNIMA physically.
+            </p>
+
+            <p>
+                <strong>Lesson:</strong>
+                Digital access can reduce delays in accessing scholarly
+                information.
+            </p>
+
+        </div>
+
+
+        <div class="example-box">
+
+            <h3>Example 2: Memex</h3>
+
+            <p>
+                Vannevar Bush proposed the Memex in 1945.
+            </p>
+
+            <p>
+                <strong>Lesson:</strong>
+                It was an early vision of electronic information storage
+                and retrieval.
+            </p>
+
+        </div>
+
+
+        <div class="example-box">
+
+            <h3>Example 3: Microfiche</h3>
+
+            <p>
+                Documents could be reduced and stored on microfiche.
+            </p>
+
+            <p>
+                <strong>Lesson:</strong>
+                It was an earlier technology for compact information
+                storage before modern digital libraries.
+            </p>
+
+        </div>
+
+
+        <div class="example-box">
+
+            <h3>Example 4: World Wide Web</h3>
+
+            <p>
+                Tim Berners-Lee developed the World Wide Web.
+            </p>
+
+            <p>
+                <strong>Lesson:</strong>
+                The Web made connected information resources accessible
+                through the Internet.
+            </p>
+
+        </div>
+
+
+        <div class="example-box">
+
+            <h3>Example 5: SAGE and Elsevier</h3>
+
+            <p>
+                Academic publishers provide electronic scholarly resources.
+            </p>
+
+            <p>
+                <strong>Lesson:</strong>
+                Electronic publishing became an important part of digital
+                library collections.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 26 -->
+
+    <div class="content-box">
+
+        <h2>26. Short Exam Definition</h2>
+
+        <div class="summary-box">
+
+            <p>
+                <strong>
+                    A digital library is a set of electronic resources
+                    and associated technical capabilities for creating,
+                    searching and using information, organized for a
+                    particular community of users according to their
+                    information needs.
+                </strong>
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- 27 -->
+
+    <div class="content-box">
+
+        <h2>27. Final Summary</h2>
+
+        <p>
+            A digital library is not simply a computer containing
+            documents.
+        </p>
+
+        <div class="summary-box">
+
+            <h3>
+                Digital Library =
+                Electronic Resources +
+                Technical Capabilities +
+                Users +
+                Information Needs
+            </h3>
+
+        </div>
+
+        <p>
+            The development of digital libraries was influenced by:
+        </p>
+
+        <div class="process-box">
+
+            <p>
+                <strong>
+                    Vannevar Bush → Memex → Microfiche →
+                    Hypertext → World Wide Web →
+                    Electronic Publishing → Digital Libraries
+                </strong>
+            </p>
+
+        </div>
+
+        <h3>Important benefits include:</h3>
+
+        <ul>
+
+            <li>Remote access</li>
+
+            <li>24/7 availability</li>
+
+            <li>Fast access</li>
+
+            <li>Searching</li>
+
+            <li>Browsing</li>
+
+            <li>Downloading and saving where permitted</li>
+
+            <li>Access to multimedia</li>
+
+            <li>Access through Internet and intranet</li>
+
+            <li>Access to electronic scholarly resources</li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- =================================================
+         LIS214 QUIZ
+    ================================================== -->
+
+    <div class="content-box">
+
+        <h2>📝 LIS214 Multiple Choice Quiz</h2>
+
+        <p>
+            Choose the best answer for each question.
+        </p>
+
+
+        <div class="question">
+
+            <p>
+                <strong>
+                    1. What is a digital library?
+                </strong>
+            </p>
+
+            <label>
+                <input type="radio" name="l214q1" value="A">
+                A. A library containing only printed books
+            </label>
+
+            <label>
+                <input type="radio" name="l214q1" value="B">
+                B. Electronic resources and technical capabilities
+                for creating, searching and using information
+            </label>
+
+            <label>
+                <input type="radio" name="l214q1" value="C">
+                C. A room containing computers
+            </label>
+
+            <label>
+                <input type="radio" name="l214q1" value="D">
+                D. A library without users
+            </label>
+
+        </div>
+
+
+        <div class="question">
+
+            <p>
+                <strong>
+                    2. Who proposed the idea of the Memex?
+                </strong>
+            </p>
+
+            <label>
+                <input type="radio" name="l214q2" value="A">
+                A. Tim Berners-Lee
+            </label>
+
+            <label>
+                <input type="radio" name="l214q2" value="B">
+                B. Vannevar Bush
+            </label>
+
+            <label>
+                <input type="radio" name="l214q2" value="C">
+                C. SAGE
+            </label>
+
+            <label>
+                <input type="radio" name="l214q2" value="D">
+                D. Elsevier
+            </label>
+
+        </div>
+
+
+        <div class="question">
+
+            <p>
+                <strong>
+                    3. What problem did the UNIMA foreign-journal
+                    example illustrate?
+                </strong>
+            </p>
+
+            <label>
+                <input type="radio" name="l214q3" value="A">
+                A. Lack of bookshelves
+            </label>
+
+            <label>
+                <input type="radio" name="l214q3" value="B">
+                B. Delay in receiving physical foreign journals
+            </label>
+
+            <label>
+                <input type="radio" name="l214q3" value="C">
+                C. Too many computers
+            </label>
+
+            <label>
+                <input type="radio" name="l214q3" value="D">
+                D. Lack of students
+            </label>
+
+        </div>
+
+
+        <div class="question">
+
+            <p>
+                <strong>
+                    4. Who developed the World Wide Web?
+                </strong>
+            </p>
+
+            <label>
+                <input type="radio" name="l214q4" value="A">
+                A. Vannevar Bush
+            </label>
+
+            <label>
+                <input type="radio" name="l214q4" value="B">
+                B. Tim Berners-Lee
+            </label>
+
+            <label>
+                <input type="radio" name="l214q4" value="C">
+                C. Elsevier
+            </label>
+
+            <label>
+                <input type="radio" name="l214q4" value="D">
+                D. SAGE
+            </label>
+
+        </div>
+
+
+        <div class="question">
+
+            <p>
+                <strong>
+                    5. Which of the following is an example of
+                    electronic scholarly publishing?
+                </strong>
+            </p>
+
+            <label>
+                <input type="radio" name="l214q5" value="A">
+                A. SAGE
+            </label>
+
+            <label>
+                <input type="radio" name="l214q5" value="B">
+                B. Microfiche reader
+            </label>
+
+            <label>
+                <input type="radio" name="l214q5" value="C">
+                C. Bookshelf
+            </label>
+
+            <label>
+                <input type="radio" name="l214q5" value="D">
+                D. Reading table
+            </label>
+
+        </div>
+
+
+        <button class="quiz-button" onclick="markLIS214Quiz()">
+            Check My Answers
+        </button>
+
+        <div id="lis214QuizResult"></div>
+
+    </div>
+
+</div>
+<!-- ================= LIS212 ================= -->
+
+<div id="lis212" style="display:none;">
+
+    <div class="content-box">
+        <h2>📚 LIS212 — Records and Archives Management</h2>
+
+        <p>
+            Records and Archives Management deals with the creation, use,
+            maintenance, preservation and management of records and archives.
+        </p>
+
+        <div class="example-box">
+            <h3>🎯 Main Idea</h3>
+            <p>
+                Records are created when people and organisations carry out
+                activities. Some records are kept because they have continuing
+                value as evidence, information or historical memory.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>1. Development of Records and Archives</h2>
+
+        <p>
+            Records and archives have existed for a very long time. Their
+            development can be understood through different historical periods.
+        </p>
+
+        <ul>
+            <li>Early civilisations</li>
+            <li>Medieval period</li>
+            <li>19th-century emergence of modern archival science</li>
+            <li>20th-century professional development</li>
+            <li>Development of records management</li>
+            <li>Development of archives in Africa</li>
+            <li>Development of archives in Malawi</li>
+        </ul>
+    </div>
+
+    <div class="content-box">
+        <h2>2. Records in Early Civilisations</h2>
+
+        <p>
+            Early societies created records to support administration,
+            government, trade, religion and social activities.
+        </p>
+
+        <p>
+            Records could include information about transactions, land,
+            taxation, laws, government activities and important events.
+        </p>
+
+        <div class="example-box">
+            <h3>📌 Important Point</h3>
+            <p>
+                The need to keep information is not new. People have always
+                needed ways of recording and preserving information for future
+                use.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>3. Medieval Period</h2>
+
+        <p>
+            During the medieval period, records were produced and kept by
+            institutions such as governments, churches and other authorities.
+        </p>
+
+        <p>
+            Written records became important for administration, legal matters,
+            property ownership and religious activities.
+        </p>
+    </div>
+
+    <div class="content-box">
+        <h2>4. Emergence of Modern Archival Science</h2>
+
+        <p>
+            Modern archival science developed particularly during the
+            19th century.
+        </p>
+
+        <p>
+            During this period, there was increasing recognition that records
+            should be managed systematically rather than being kept randomly.
+        </p>
+
+        <div class="example-box">
+            <h3>🎓 Class / Examination Point</h3>
+            <p>
+                The 19th century is important because it marked the emergence
+                and development of modern archival principles and professional
+                archival practice.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>5. Why the 19th Century Was Important</h2>
+
+        <p>
+            The growth of governments and organisations resulted in the
+            creation of increasing amounts of records.
+        </p>
+
+        <p>
+            This created a need for systematic ways of arranging, preserving
+            and providing access to records.
+        </p>
+
+        <ul>
+            <li>More government administration</li>
+            <li>More records were being created</li>
+            <li>Records needed systematic management</li>
+            <li>Historical records needed preservation</li>
+            <li>Professional archival practices developed</li>
+        </ul>
+    </div>
+
+    <div class="content-box">
+        <h2>6. Records and Archives in Africa</h2>
+
+        <p>
+            The development of records and archives in Africa was influenced
+            by traditional systems, colonial administration, missionaries,
+            churches, companies and governments.
+        </p>
+
+        <p>
+            Different groups created records as they carried out their
+            activities.
+        </p>
+    </div>
+
+    <div class="content-box">
+        <h2>7. Traditional Records in Africa</h2>
+
+        <p>
+            Before the widespread use of written records, African communities
+            preserved and communicated information through oral and traditional
+            systems.
+        </p>
+
+        <ul>
+            <li>Oral custodians</li>
+            <li>Judicial officers</li>
+            <li>Messengers</li>
+            <li>Drum beats</li>
+            <li>Ceremonies</li>
+            <li>Oral traditions</li>
+        </ul>
+
+        <div class="example-box">
+            <h3>🇲🇼 Malawi Example</h3>
+            <p>
+                Before 1860, information could be communicated and preserved
+                through oral custodians, judicial officers, messengers,
+                drum beats and ceremonies.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>8. Malawi Before 1860</h2>
+
+        <p>
+            Before 1860, communities in the area now known as Malawi relied
+            heavily on oral methods for communicating and preserving
+            information.
+        </p>
+
+        <p>
+            Important information could be passed from one generation to
+            another through people who acted as custodians of knowledge.
+        </p>
+
+        <div class="example-box">
+            <h3>📌 Class Example</h3>
+            <p>
+                Judicial officers, messengers, oral custodians, ceremonies and
+                drum communication played roles in communicating information.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>9. David Livingstone and 1859</h2>
+
+        <p>
+            The lecturer referred to David Livingstone's activities in the
+            region in 1859 and his connection with Lake Nyasa.
+        </p>
+
+        <div class="example-box">
+            <h3>📅 Remember</h3>
+            <p>
+                <strong>1859 — David Livingstone and Lake Nyasa</strong>
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>10. Missionaries and Record Creation</h2>
+
+        <p>
+            Missionaries were among the groups that created and kept records
+            in Africa.
+        </p>
+
+        <p>
+            Their activities generated records relating to religious work,
+            administration, education, communication and interaction with
+            communities.
+        </p>
+    </div>
+
+    <div class="content-box">
+        <h2>11. Sierra Leone Example</h2>
+
+        <p>
+            The lecturer discussed Sierra Leone as an example of the
+            development of records through the activities of different groups.
+        </p>
+
+        <p>
+            Missionaries, planters, hunters and companies generated records
+            during their activities.
+        </p>
+
+        <div class="example-box">
+            <h3>📜 Class Example</h3>
+            <p>
+                Records associated with the African Leasing Corporation were
+                mentioned in the period around <strong>1881–1890</strong>.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>12. Missionaries, Planters and Other Groups</h2>
+
+        <p>
+            Different groups generated different types of records depending
+            on their activities.
+        </p>
+
+        <ul>
+            <li>Missionaries — religious and administrative records</li>
+            <li>Planters — agricultural and business records</li>
+            <li>Hunters — records related to their activities and movements</li>
+            <li>Companies — business and administrative records</li>
+            <li>Government — administrative and official records</li>
+        </ul>
+    </div>
+
+    <div class="content-box">
+        <h2>13. Malawi Archives History</h2>
+
+        <p>
+            The history of archives in Malawi developed through different
+            stages, including colonial administration and later national
+            archival development.
+        </p>
+
+        <p>
+            The preservation of records became increasingly important as
+            government administration expanded and more records were created.
+        </p>
+    </div>
+
+    <div class="content-box">
+        <h2>14. The 1919 Fire</h2>
+
+        <div class="example-box">
+            <h3>🔥 Important Malawi Example</h3>
+
+            <p>
+                In <strong>1919</strong>, a fire resulted in the loss of
+                records in Malawi.
+            </p>
+
+            <p>
+                This demonstrates the importance of proper preservation and
+                protection of records.
+            </p>
+        </div>
+
+        <p>
+            Loss of records can result in the loss of administrative,
+            historical and evidential information.
+        </p>
+    </div>
+
+    <div class="content-box">
+        <h2>15. Chiefs and Churches as Record Holders</h2>
+
+        <p>
+            The lecturer also noted that chiefs and churches have held old
+            records.
+        </p>
+
+        <p>
+            These records can be important sources of information about
+            communities, institutions and historical activities.
+        </p>
+    </div>
+
+    <div class="content-box">
+        <h2>16. Endangered Archives</h2>
+
+        <p>
+            Some historical records are endangered because of poor storage,
+            environmental conditions, lack of resources and other risks.
+        </p>
+
+        <p>
+            Efforts have therefore been made to identify, preserve and
+            digitise endangered historical records.
+        </p>
+
+        <div class="example-box">
+            <h3>📚 Class Example</h3>
+            <p>
+                The lecturer discussed the <strong>Endangered Archives</strong>
+                work associated with the British Library's digital heritage
+                activities.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>17. British Library Digital Heritage</h2>
+
+        <p>
+            The lecturer gave an example involving the British Library and
+            digital heritage projects aimed at preserving endangered
+            historical materials.
+        </p>
+
+        <p>
+            Digitisation can help preserve information and make historical
+            materials available for research while reducing dependence on
+            handling fragile originals.
+        </p>
+
+        <div class="example-box">
+            <h3>💰 Class Example</h3>
+            <p>
+                The lecturer mentioned an initial pilot involving approximately
+                <strong>£10,000</strong> and about <strong>three months</strong>,
+                followed by a larger project involving approximately
+                <strong>£50,000</strong>.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>18. Central African Archives — 1947</h2>
+
+        <div class="example-box">
+            <h3>📅 Important Date</h3>
+
+            <p>
+                <strong>1947 — Central African Archives</strong>
+            </p>
+
+            <p>
+                This forms part of the development of organised archival
+                administration in the region.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>19. Federal Archives of Rhodesia and Nyasaland — 1953</h2>
+
+        <div class="example-box">
+            <h3>📅 Important Date</h3>
+
+            <p>
+                <strong>1953 — Federal Archives of Rhodesia and Nyasaland</strong>
+            </p>
+
+            <p>
+                The establishment of the Federal Archives was connected with
+                the administrative structures of the Federation of Rhodesia
+                and Nyasaland.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>20. Federation of Rhodesia and Nyasaland</h2>
+
+        <p>
+            The Federation of Rhodesia and Nyasaland was an important
+            administrative development in the history of the region.
+        </p>
+
+        <p>
+            The Federation brought together territories under a federal
+            administrative structure, which also affected the management and
+            administration of government records.
+        </p>
+
+        <div class="example-box">
+            <h3>📌 Records Point</h3>
+            <p>
+                Federal administration generated and required organised
+                records for government activities.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>21. End of the Federation</h2>
+
+        <p>
+            The Federation came to an end in <strong>1963</strong>.
+        </p>
+
+        <p>
+            When the Federation ended, the territories continued along
+            separate administrative and political paths. This also affected
+            the administration and custody of records.
+        </p>
+
+        <div class="example-box">
+            <h3>🎓 Exam Point</h3>
+            <p>
+                Remember the sequence:
+            </p>
+
+            <p>
+                <strong>1953 → Federal Archives</strong><br>
+                <strong>1963 → Federation ended</strong>
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>22. Malawi Independence</h2>
+
+        <p>
+            The lecturer discussed the transition from the colonial period to
+            independence and its importance for the development of national
+            administration and records.
+        </p>
+
+        <div class="example-box">
+            <h3>🇲🇼 Important Date</h3>
+            <p>
+                <strong>1 January 1964 — Malawi independence</strong>
+            </p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>23. Why Records Are Important</h2>
+
+        <p>
+            Records are important because they provide evidence and
+            information about activities and decisions.
+        </p>
+
+        <ul>
+            <li>Evidence of activities</li>
+            <li>Support for administration</li>
+            <li>Legal evidence</li>
+            <li>Historical information</li>
+            <li>Accountability</li>
+            <li>Institutional memory</li>
+            <li>Research</li>
+        </ul>
+    </div>
+
+    <div class="content-box">
+        <h2>24. Why Archives Are Important</h2>
+
+        <p>
+            Archives preserve records that have continuing value.
+        </p>
+
+        <ul>
+            <li>They preserve history.</li>
+            <li>They support research.</li>
+            <li>They provide evidence.</li>
+            <li>They support accountability.</li>
+            <li>They preserve institutional memory.</li>
+            <li>They help future generations understand the past.</li>
+        </ul>
+    </div>
+
+    <div class="content-box">
+        <h2>25. Records and Archives — Difference</h2>
+
+        <table>
+            <tr>
+                <th>Records</th>
+                <th>Archives</th>
+            </tr>
+
+            <tr>
+                <td>
+                    Information created or received during activities.
+                </td>
+
+                <td>
+                    Records preserved because of their continuing value.
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    May still be actively used.
+                </td>
+
+                <td>
+                    Usually preserved for long-term or permanent use.
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Support current activities.
+                </td>
+
+                <td>
+                    Support historical, evidential and research needs.
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="content-box">
+        <h2>26. Development Process</h2>
+
+        <div class="process-box">
+
+            <p>📝 <strong>Activities</strong></p>
+
+            <p>↓</p>
+
+            <p>📄 <strong>Records are created</strong></p>
+
+            <p>↓</p>
+
+            <p>🗂️ <strong>Records are managed</strong></p>
+
+            <p>↓</p>
+
+            <p>🔍 <strong>Records are evaluated</strong></p>
+
+            <p>↓</p>
+
+            <p>🏛️ <strong>Records with continuing value become archives</strong></p>
+
+            <p>↓</p>
+
+            <p>📚 <strong>Archives are preserved and made available</strong></p>
+
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>27. Important Class Examples</h2>
+
+        <div class="example-box">
+
+            <p>
+                🇲🇼 <strong>Malawi before 1860:</strong>
+                oral custodians, judicial officers, messengers, drum beats
+                and ceremonies.
+            </p>
+
+            <p>
+                🧭 <strong>1859:</strong>
+                David Livingstone and Lake Nyasa.
+            </p>
+
+            <p>
+                📜 <strong>1881–1890:</strong>
+                records associated with the African Leasing Corporation
+                discussed in the Sierra Leone context.
+            </p>
+
+            <p>
+                🔥 <strong>1919:</strong>
+                fire and loss of records in Malawi.
+            </p>
+
+            <p>
+                🏛️ <strong>1947:</strong>
+                Central African Archives.
+            </p>
+
+            <p>
+                🗄️ <strong>1953:</strong>
+                Federal Archives of Rhodesia and Nyasaland.
+            </p>
+
+            <p>
+                🔚 <strong>1963:</strong>
+                Federation ended.
+            </p>
+
+            <p>
+                🇲🇼 <strong>1 January 1964:</strong>
+                Malawi independence.
+            </p>
+
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>28. Short Examination Definition</h2>
+
+        <div class="summary-box">
+
+            <p>
+                <strong>
+                Records and Archives Management is the systematic management
+                of records from their creation and use through maintenance,
+                preservation and eventual archival preservation where records
+                have continuing value.
+                </strong>
+            </p>
+
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>29. Final Summary</h2>
+
+        <ul>
+            <li>Records have existed since early civilisations.</li>
+            <li>Traditional African societies used oral systems to preserve information.</li>
+            <li>Modern archival science developed particularly in the 19th century.</li>
+            <li>Missionaries, planters, hunters and companies generated records.</li>
+            <li>Malawi has a long history of records and archival development.</li>
+            <li>The 1919 fire resulted in loss of records.</li>
+            <li>Chiefs and churches have also held old records.</li>
+            <li>Endangered archives projects help preserve historical materials.</li>
+            <li>Central African Archives were discussed in relation to 1947.</li>
+            <li>Federal Archives of Rhodesia and Nyasaland were established in 1953.</li>
+            <li>The Federation ended in 1963.</li>
+            <li>Malawi became independent on 1 January 1964.</li>
+        </ul>
+    </div>
+
+    <!-- LIS212 QUIZ -->
+
+    <div class="content-box">
+        <h2>🧠 LIS212 Quick Quiz</h2>
+
+        <div class="question">
+            <p><strong>1. In which century did modern archival science develop significantly?</strong></p>
+
+            <label>
+                <input type="radio" name="l212q1" value="A">
+                A. 15th century
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q1" value="B">
+                B. 19th century
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q1" value="C">
+                C. 17th century
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q1" value="D">
+                D. 21st century
+            </label>
+        </div>
+
+        <div class="question">
+            <p><strong>2. Which event was associated with the year 1919 in the Malawi lecture?</strong></p>
+
+            <label>
+                <input type="radio" name="l212q2" value="A">
+                A. Malawi independence
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q2" value="B">
+                B. A fire and loss of records
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q2" value="C">
+                C. Establishment of the World Wide Web
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q2" value="D">
+                D. End of the Federation
+            </label>
+        </div>
+
+        <div class="question">
+            <p><strong>3. When were the Federal Archives of Rhodesia and Nyasaland discussed as being established?</strong></p>
+
+            <label>
+                <input type="radio" name="l212q3" value="A">
+                A. 1947
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q3" value="B">
+                B. 1953
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q3" value="C">
+                C. 1963
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q3" value="D">
+                D. 1964
+            </label>
+        </div>
+
+        <div class="question">
+            <p><strong>4. What happened to the Federation of Rhodesia and Nyasaland in 1963?</strong></p>
+
+            <label>
+                <input type="radio" name="l212q4" value="A">
+                A. It was created
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q4" value="B">
+                B. It came to an end
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q4" value="C">
+                C. It became a digital library
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q4" value="D">
+                D. It became a university
+            </label>
+        </div>
+
+        <div class="question">
+            <p><strong>5. Which of the following is an example of a traditional information system discussed for Malawi before 1860?</strong></p>
+
+            <label>
+                <input type="radio" name="l212q5" value="A">
+                A. Cloud storage
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q5" value="B">
+                B. Oral custodians
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q5" value="C">
+                C. Online databases
+            </label><br>
+
+            <label>
+                <input type="radio" name="l212q5" value="D">
+                D. Email
+            </label>
+        </div>
+
+        <button class="quiz-button" onclick="markLIS212Quiz()">
+            Check Answers
+        </button>
+
+        <p id="lis212Result"></p>
+
+    </div>
+
+</div>
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <p>
+        © 2026 Austine's LIS Study Hub
+    </p>
+
+    <p>
+        University of Malawi — Library and Information Science
+    </p>
+
+</footer>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+/* =====================================================
+   SUPABASE CONNECTION
+===================================================== */
+
+const SUPABASE_URL =
+    "https://tvonlurjmtlpomtnzmyr.supabase.co";
+
+/*
+   This is the PUBLIC/PUBLISHABLE key.
+   Do NOT use a secret/service-role key here.
+*/
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_TnznOSRo3Rcs8_gwvbhs_Q_WsCeC3Sj";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+/* =====================================================
+   AUTH SCREEN
+===================================================== */
+
+function showRegister() {
+
+    document.getElementById("loginForm").style.display = "none";
+
+    document.getElementById("registerForm").style.display = "block";
+
+    document.getElementById("message").innerHTML = "";
+}
+
+
+function showLogin() {
+
+    document.getElementById("registerForm").style.display = "none";
+
+    document.getElementById("loginForm").style.display = "block";
+
+    document.getElementById("message").innerHTML = "";
+}
+
+
+/* =====================================================
+   SHOW WEBSITE AFTER LOGIN
+===================================================== */
+
+function showWebsite() {
+
+    document.getElementById("auth").style.display = "none";
+
+    document.getElementById("website").style.display = "block";
+
+    showHome();
+}
+
+
+/* =====================================================
+   REGISTER
+===================================================== */
+
+async function register() {
+
+    const username =
+        document.getElementById("registerUsername")
+        .value
+        .trim();
+
+    const email =
+        document.getElementById("registerEmail")
+        .value
+        .trim();
+
+    const password =
+        document.getElementById("registerPassword")
+        .value;
+
+    const confirmPassword =
+        document.getElementById("confirmPassword")
+        .value;
+
+
+    if (!username || !email || !password || !confirmPassword) {
+
+        document.getElementById("message").innerHTML =
+            "❌ Please fill in all fields.";
+
+        return;
+    }
+
+
+    if (password !== confirmPassword) {
+
+        document.getElementById("message").innerHTML =
+            "❌ Passwords do not match.";
+
+        return;
+    }
+
+
+    if (password.length < 8) {
+
+        document.getElementById("message").innerHTML =
+            "❌ Password must be at least 8 characters.";
+
+        return;
+    }
+
+
+    document.getElementById("message").innerHTML =
+        "⏳ Creating your account...";
+
+
+    try {
+
+        const { data, error } =
+            await supabaseClient.auth.signUp({
+
+                email: email,
+
+                password: password,
+
+                options: {
+
+                    data: {
+                        username: username
+                    }
+
+                }
+
+            });
+
+
+        if (error) {
+
+            document.getElementById("message").innerHTML =
+                "❌ Registration failed: " +
+                error.message;
+
+            return;
+        }
+
+
+        /*
+          If email confirmation is disabled in Supabase,
+          a session will normally be created immediately.
+        */
+
+        if (data.session) {
+
+            document.getElementById("message").innerHTML =
+                "✅ Account created successfully!";
+
+            showWebsite();
+
+        } else {
+
+            document.getElementById("message").innerHTML =
+                "✅ Account created. Please check your email if confirmation is required.";
+
+            showLogin();
+
+        }
+
+    } catch (error) {
+
+        document.getElementById("message").innerHTML =
+            "❌ Connection error: " +
+            error.message;
+
+    }
+
+}
+
+
+/* =====================================================
+   LOGIN USING REAL EMAIL
+===================================================== */
+
+async function login() {
+
+    const email =
+        document.getElementById("loginEmail")
+        .value
+        .trim();
+
+    const password =
+        document.getElementById("loginPassword")
+        .value;
+
+
+    if (!email || !password) {
+
+        document.getElementById("message").innerHTML =
+            "❌ Please enter your email and password.";
+
+        return;
+    }
+
+
+    document.getElementById("message").innerHTML =
+        "⏳ Logging in...";
+
+
+    try {
+
+        const { data, error } =
+            await supabaseClient.auth.signInWithPassword({
+
+                email: email,
+
+                password: password
+
+            });
+
+
+        if (error) {
+
+            document.getElementById("message").innerHTML =
+                "❌ Login failed: " +
+                error.message;
+
+            return;
+        }
+
+
+        if (data.session) {
+
+            document.getElementById("message").innerHTML =
+                "✅ Login successful!";
+
+            showWebsite();
+
+        } else {
+
+            document.getElementById("message").innerHTML =
+                "❌ Login did not create a session.";
+
+        }
+
+    } catch (error) {
+
+        document.getElementById("message").innerHTML =
+            "❌ Connection error: " +
+            error.message;
+
+    }
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout() {
+
+    try {
+
+        const { error } =
+            await supabaseClient.auth.signOut();
+
+        if (error) {
+
+            alert(
+                "Logout error: " +
+                error.message
+            );
+
+            return;
+        }
+
+        document.getElementById("website").style.display = "none";
+
+        document.getElementById("auth").style.display = "flex";
+
+        showLogin();
+
+        document.getElementById("loginEmail").value = "";
+
+        document.getElementById("loginPassword").value = "";
+
+    } catch (error) {
+
+        alert(
+            "Logout error: " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   CHECK EXISTING LOGIN
+===================================================== */
+
+async function checkLogin() {
+
+    try {
+
+        const { data, error } =
+            await supabaseClient.auth.getSession();
+
+
+        if (error) {
+
+            document.getElementById("auth").style.display = "flex";
+
+            document.getElementById("website").style.display = "none";
+
+            document.getElementById("message").innerHTML =
+                "❌ Supabase connection error: " +
+                error.message;
+
+            return;
+        }
+
+
+        if (data.session) {
+
+            showWebsite();
+
+        } else {
+
+            document.getElementById("auth").style.display = "flex";
+
+            document.getElementById("website").style.display = "none";
+
+        }
+
+    } catch (error) {
+
+        document.getElementById("auth").style.display = "flex";
+
+        document.getElementById("website").style.display = "none";
+
+        document.getElementById("message").innerHTML =
+            "❌ Connection error: " +
+            error.message;
+
+    }
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+function hideAll() {
+    document.getElementById("home").style.display = "none";
+    document.getElementById("lis211").style.display = "none";
+    document.getElementById("lis214").style.display = "none";
+    document.getElementById("lis212").style.display = "none";
+}
+
+function showHome() {
+
+    hideAll();
+
+    document.getElementById("home").style.display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+function showYear1() {
+
+    hideAll();
+
+    document.getElementById("home").style.display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+function showYear2() {
+
+    hideAll();
+
+    document.getElementById("home").style.display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+function showLIS211() {
+
+    hideAll();
+
+    document.getElementById("lis211").style.display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+function showLIS212() {
+
+    hideAll();
+
+    document.getElementById("lis212").style.display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+function showLIS214() {
+
+    hideAll();
+
+    document.getElementById("lis214").style.display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+function markLIS214Quiz() {
+
+    const answers = {
+
+        l214q1: "B",
+
+        l214q2: "B",
+
+        l214q3: "B",
+
+        l214q4: "B",
+
+        l214q5: "A"
+
+    };
+
+
+    let score = 0;
+
+
+    for (let question in answers) {
+
+        const selected =
+            document.querySelector(
+                'input[name="' +
+                question +
+                '"]:checked'
+            );
+
+
+        if (
+            selected &&
+            selected.value === answers[question]
+        ) {
+
+            score++;
+
+        }
+
+    }
+
+
+    const percentage =
+        (score / 5) * 100;
+
+
+    let message = "";
+
+
+    if (percentage === 100) {
+
+        message =
+            "🎉 Excellent! You got all 5 correct.";
+
+    } else if (percentage >= 80) {
+
+        message =
+            "👏 Very good! Keep studying.";
+
+    } else if (percentage >= 50) {
+
+        message =
+            "👍 Fair attempt. Review the LIS214 notes.";
+
+    } else {
+
+        message =
+            "📚 Keep studying the lecture notes and try again.";
+
+    }
+
+
+    document.getElementById("lis214QuizResult").innerHTML =
+
+        "Your score: " +
+        score +
+        "/5 (" +
+        percentage +
+        "%)<br><br>" +
+        message;
+
+}
+function markLIS212Quiz() {
+
+    const answers = {
+        l212q1: "B",
+        l212q2: "B",
+        l212q3: "B",
+        l212q4: "B",
+        l212q5: "B"
+    };
+
+    let score = 0;
+
+    for (let question in answers) {
+
+        const selected =
+            document.querySelector(
+                'input[name="' + question + '"]:checked'
+            );
+
+        if (selected && selected.value === answers[question]) {
+            score++;
+        }
+    }
+
+    const percentage = (score / 5) * 100;
+
+    let message = "";
+
+    if (percentage === 100) {
+        message = "🎉 Excellent! You got all 5 correct.";
+    } else if (percentage >= 80) {
+        message = "👏 Very good! Keep studying.";
+    } else if (percentage >= 50) {
+        message = "👍 Fair attempt. Review the LIS212 notes.";
+    } else {
+        message = "📚 Keep studying the LIS212 lecture notes and try again.";
+    }
+
+    document.getElementById("lis212Result").innerHTML =
+        "Your score: " + score + "/5 (" + percentage + "%)<br><br>" + message;
+}
+
+function courseMessage(course) {
+
+    alert(
+        course +
+        " notes are coming soon. LIS211 is currently available."
+    );
+
+}
+
+
+/* =====================================================
+   LIS211 QUIZ
+===================================================== */
+
+function markQuiz() {
+
+    const answers = {
+
+        q1: "B",
+
+        q2: "A",
+
+        q3: "C",
+
+        q4: "B",
+
+        q5: "C"
+
+    };
+
+
+    let score = 0;
+
+
+    for (let question in answers) {
+
+        const selected =
+            document.querySelector(
+                'input[name="' +
+                question +
+                '"]:checked'
+            );
+
+
+        if (selected && selected.value === answers[question]) {
+
+            score++;
+
+        }
+
+    }
+
+
+    const percentage =
+        (score / 5) * 100;
+
+
+    let message = "";
+
+
+    if (percentage === 100) {
+
+        message =
+            "🎉 Excellent! You got all 5 correct.";
+
+    } else if (percentage >= 80) {
+
+        message =
+            "👏 Very good! Keep studying.";
+
+    } else if (percentage >= 50) {
+
+        message =
+            "👍 Fair attempt. Review your notes.";
+
+    } else {
+
+        message =
+            "📚 Keep studying and try again.";
+
+    }
+
+
+    document.getElementById("quizResult").innerHTML =
+
+        "Your score: " +
+        score +
+        "/5 (" +
+        percentage +
+        "%)<br><br>" +
+        message;
+
+}
+
+/* =====================================================
+   START WEBSITE
+===================================================== */
+
+window.addEventListener(
+    "load",
+    checkLogin
+);
+
+</script>
+
+</body>
+</html>
